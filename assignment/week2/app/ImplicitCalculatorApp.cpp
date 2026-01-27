@@ -16,12 +16,12 @@ bool containsGarbageAfterInput()
 {
     char bufferCharacter;
 
-    while(std::cin.get(bufferCharacter) && bufferCharacter != '\n')
+    while (std::cin.get(bufferCharacter) && bufferCharacter != '\n')
     {
         if (bufferCharacter != ' ' && bufferCharacter != '\t')
         {
             return true;
-        }          
+        }
     }
 
     return false;
@@ -41,7 +41,7 @@ void readValidatedInteger(int &userInputChoice)
             continue;
         }
 
-        return; 
+        return;
     }
 }
 
@@ -62,10 +62,10 @@ void readValidatedDouble(double &operandValue)
 
 void readOperands(double &firstOperand, double &secondOperand)
 {
-    std :: cout << "Enter first Operand : ";
+    std ::cout << "Enter first Operand : ";
     readValidatedDouble(firstOperand);
 
-    std :: cout << "Enter second Operand : ";
+    std ::cout << "Enter second Operand : ";
     readValidatedDouble(secondOperand);
 }
 
@@ -85,69 +85,70 @@ double performMultiplication(double firstOperand, double secondOperand)
 }
 
 double performDivision(double firstOperand, double secondOperand)
-{ 
+{
     return division(firstOperand, secondOperand);
 }
 
-void displayResult(double result,double firstOperand, double secondOperand,std ::string operation)
+void displayResult(double result, double firstOperand, double secondOperand, std ::string operation)
 {
-    std::cout << "\n" << operation << " of " << firstOperand << " and " << secondOperand <<  " is " << result << "\n";
+    std::cout << "\n"
+              << operation << " of " << firstOperand << " and " << secondOperand << " is " << result << "\n";
 }
 
-int main() 
+int main()
 {
     int userInputChoice;
-    double result,firstOperand,secondOperand;
+    double result, firstOperand, secondOperand;
 
     do
     {
         displayMenu();
         readValidatedInteger(userInputChoice);
 
-        if(userInputChoice >=1 && userInputChoice <= 4)
+        if (userInputChoice >= 1 && userInputChoice <= 4)
         {
-            readOperands(firstOperand , secondOperand);
+            readOperands(firstOperand, secondOperand);
         }
-        
+
         switch (userInputChoice)
         {
-            case 1:
-                result = performAddition(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Addition");
-                break;
+        case 1:
+            result = performAddition(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Addition");
+            break;
 
-            case 2:
-                result = performSubtraction(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Subtraction");
-                break;
+        case 2:
+            result = performSubtraction(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Subtraction");
+            break;
 
-            case 3:
-                result = performMultiplication(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Multiplication");
-                break;
+        case 3:
+            result = performMultiplication(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Multiplication");
+            break;
 
-            case 4:
-                try
-                {
-                    result = performDivision(firstOperand, secondOperand);
-                    displayResult(result, firstOperand, secondOperand, "Division");
-                }
-                catch (const std::runtime_error& error)
-                {
-                    std::cout << "\nError: " << error.what() << "\n";
-                }
-                break;
+        case 4:
+            try
+            {
+                result = performDivision(firstOperand, secondOperand);
+                displayResult(result, firstOperand, secondOperand, "Division");
+            }
+            catch (const std::runtime_error &error)
+            {
+                std::cout << "\nError: " << error.what() << "\n";
+            }
+            break;
 
-            case 5:
-                std::cout << "\nExiting program...\n";
-                break;
+        case 5:
+            std::cout << "\nExiting program...\n";  
+            break;
 
-            default:
-                std::cout << "\nInvalid choice. Please try again.\n";
+        default:
+            std::cout << "\nInvalid choice. Please try again.\n";
         }
-        
+
     } while (userInputChoice != 5);
-    
-    std :: cout << "Thankyou for using the program\n";
+
+    std ::cout << "Thankyou for using the program\n";
     return 0;
 }

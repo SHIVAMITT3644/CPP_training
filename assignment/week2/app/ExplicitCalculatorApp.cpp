@@ -3,12 +3,12 @@
 #include <dlfcn.h>
 #include <stdexcept>
 
-typedef double (*MathFunc)(double, double);
+typedef double (*MathFunction)(double, double);
 
-MathFunc addition       = nullptr;
-MathFunc subtraction    = nullptr;
-MathFunc multiplication = nullptr;
-MathFunc division       = nullptr;
+MathFunction addition       = nullptr;
+MathFunction subtraction    = nullptr;
+MathFunction multiplication = nullptr;
+MathFunction division       = nullptr;
 
 void displayMenu()
 {
@@ -110,7 +110,6 @@ void displayResult(double result, double a, double b, const std::string &operati
               << " is " << result << "\n";
 }
 
-
 int main()
 {
     void* handle = dlopen("./lib/libMathExplicit.so", RTLD_LAZY);
@@ -118,76 +117,79 @@ int main()
     if (!handle)
     {
         std::cerr << "Error loading library: " << dlerror() << "\n";
-        return 1;
+    }
+    else
+    {
+        addition       = (MathFunction)dlsym(handle, "addition");
+        subtraction    = (MathFunction)dlsym(handle, "subtraction");
+        multiplication = (MathFunction)dlsym(handle, "multiplication");
+        division       = (MathFunction)dlsym(handle, "division");
+
+        if (!addition || !subtraction || !multiplication || !division)
+        {
+            std::cerr << "Error loading symbols\n";
+            dlclose(handle);
+        }
+        else
+        {
+            int userInputChoice;
+            double result, firstOperand, secondOperand;
+
+            do
+            {
+                displayMenu();
+                readValidatedInteger(userInputChoice);
+
+                if (userInputChoice >= 1 && userInputChoice <= 4)
+                {
+                    readOperands(firstOperand, secondOperand);
+                }
+                    
+                switch (userInputChoice)
+                {
+                    case 1:
+                        result = performAddition(firstOperand, secondOperand);
+                        displayResult(result, firstOperand, secondOperand, "Addition");
+                        break;
+
+                    case 2:
+                        result = performSubtraction(firstOperand, secondOperand);
+                        displayResult(result, firstOperand, secondOperand, "Subtraction");
+                        break;
+
+                    case 3:
+                        result = performMultiplication(firstOperand, secondOperand);
+                        displayResult(result, firstOperand, secondOperand, "Multiplication");
+                        break;
+
+                    case 4:
+                        try
+                        {
+                            result = performDivision(firstOperand, secondOperand);
+                            displayResult(result, firstOperand, secondOperand, "Division");
+                        }
+                        catch (const std::runtime_error &error)
+                        {
+                            std::cout << "\nError: " << error.what() << "\n";
+                        }
+                        break;
+
+                    case 5:
+                        std::cout << "\nExiting program...\n";
+                        break;
+
+                    default:
+                        std::cout << "\nInvalid choice. Please try again.\n";
+                }
+
+            } while (userInputChoice != 5);
+
+            dlclose(handle);
+
+            std::cout << "Thank you for using the program\n";
+        }     
+
     }
 
-    addition       = (MathFunc)dlsym(handle, "addition");
-    subtraction    = (MathFunc)dlsym(handle, "subtraction");
-    multiplication = (MathFunc)dlsym(handle, "multiplication");
-    division       = (MathFunc)dlsym(handle, "division");
-
-    if (!addition || !subtraction || !multiplication || !division)
-    {
-        std::cerr << "Error loading symbols\n";
-        dlclose(handle);
-
-        return 1;
-    }
-
-    int userInputChoice;
-    double result, firstOperand, secondOperand;
-
-    do
-    {
-        displayMenu();
-        readValidatedInteger(userInputChoice);
-
-        if (userInputChoice >= 1 && userInputChoice <= 4)
-        {
-            readOperands(firstOperand, secondOperand);
-        }
-            
-        switch (userInputChoice)
-        {
-            case 1:
-                result = performAddition(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Addition");
-                break;
-
-            case 2:
-                result = performSubtraction(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Subtraction");
-                break;
-
-            case 3:
-                result = performMultiplication(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Multiplication");
-                break;
-
-            case 4:
-                try
-                {
-                    result = performDivision(firstOperand, secondOperand);
-                    displayResult(result, firstOperand, secondOperand, "Division");
-                }
-                catch (const std::runtime_error &error)
-                {
-                    std::cout << "\nError: " << error.what() << "\n";
-                }
-                break;
-
-            case 5:
-                std::cout << "\nExiting program...\n";
-                break;
-
-            default:
-                std::cout << "\nInvalid choice. Please try again.\n";
-        }
-
-    } while (userInputChoice != 5);
-
-    dlclose(handle);
-
-    std::cout << "Thank you for using the program\n";
     return 0;
 }
