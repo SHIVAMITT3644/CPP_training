@@ -10,11 +10,11 @@ g++ -shared -o lib/libMathImplicit.so \
 Addition.o Subtraction.o Multiplication.o Division.o
 
 Step 3: Compile the implicit application
-g++ -Iinclude app/ImplicitDynamicLinking.cpp \
--Llib -lMathImplicit -o ImplicitApp
+g++ -Iinclude app/ImplicitCalulatorApp.cpp \
+-Llib -lMathImplicit -o ImplicitCalulatorApp
 
 Step 4: Run the implicit application
-LD_LIBRARY_PATH=./lib ./ImplicitApp
+LD_LIBRARY_PATH=./lib ./ImplicitCalulatorApp
 
 
 PART 2: EXPLICIT DYNAMIC LINKING
@@ -24,9 +24,9 @@ g++ -shared -o lib/libMathExplicit.so \
 Addition.o Subtraction.o Multiplication.o Division.o
 
 Step 2: Compile the explicit application
-g++ -Iinclude app/ExplicitDynamicLinking.cpp -ldl -o app/ExplicitApp
+g++ -Iinclude app/ExplicitCalulatorApp.cpp -ldl -o app/ExplicitCalulatorApp
 
 Step 3: Run the explicit application
 From project root:
-./app/ExplicitApp
+./app/ExplicitCalulatorApp
 

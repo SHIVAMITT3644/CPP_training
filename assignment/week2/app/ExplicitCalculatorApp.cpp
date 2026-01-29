@@ -1,4 +1,5 @@
 #include <iostream>
+#include "CalculatorUtils.h"
 #include <limits>
 #include <dlfcn.h>
 
@@ -10,121 +11,6 @@ MathFunction subtraction    = nullptr;
 MathFunction multiplication = nullptr;
 MathFunction division       = nullptr;
 
-void displayCalculatorMenu()
-{
-    std::cout << "-----------------------------------------\n";
-    std::cout << "1. Addition\n";
-    std::cout << "2. Subtraction\n";
-    std::cout << "3. Multiplication\n";
-    std::cout << "4. Division\n";
-    std::cout << "5. Exit\n";
-}
-
-bool checkForGarbageAfterInput()
-{
-    char bufferCharacter;
-    bool hasGarbage = false;
-
-    while (std::cin.get(bufferCharacter) && bufferCharacter != '\n')
-    {
-        if (bufferCharacter != ' ' && bufferCharacter != '\t')
-        {
-            hasGarbage = true; 
-        }
-    }
-
-    return hasGarbage;
-}
-
-void readValidatedInteger(int &userInputChoice)
-{
-    bool inputValid = false;
-
-    while (!inputValid)
-    {
-        std::cout << "\nPlease enter your choice : ";
-
-        std::cin >> userInputChoice;
-
-        if (std::cin.fail())
-        {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Error: Please enter a valid integer value only.\n";
-        }
-        else if (checkForGarbageAfterInput())
-        {
-            std::cout << "Error: Please enter a valid integer value only.\n";
-        }
-        else
-        {
-
-            inputValid = true;
-        }
-    }
-}
-
-void readValidatedDouble(double &operandValue)
-{
-    bool inputValid = false;
-
-    while (!inputValid)
-    {
-        std::cin >> operandValue;
-
-        if (std::cin.fail()) 
-        {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Error: Please enter a valid number only.\n";
-        }
-        else if (checkForGarbageAfterInput())
-        {
-            std::cout << "Error: Please enter a valid number only.\n";
-        }
-        else
-        {
-            inputValid = true;
-        }
-    }
-}
-
-void readOperands(double &firstOperand, double &secondOperand)
-{
-    std::cout << "Enter first operand  : ";
-    readValidatedDouble(firstOperand);
-
-    std::cout << "Enter second operand : ";
-    readValidatedDouble(secondOperand);
-}
-
-double performAddition(double a, double b)
-{
-    return addition(a, b);
-}
-
-double performSubtraction(double a, double b)
-{
-    return subtraction(a, b);
-}
-
-double performMultiplication(double a, double b)
-{
-    return multiplication(a, b);
-}
-
-double performDivision(double a, double b)
-{      
-    return division(a, b);
-}
-
-void displayResult(double result, double a, double b, const std::string &operation)
-{
-    std::cout << "\n" << operation << " of "
-              << a << " and " << b
-              << " is " << result << "\n";
-}
-
 void runCalculatorOperation(int userInputChoice, double firstOperand, double secondOperand)
 {
     double result;
@@ -132,17 +18,17 @@ void runCalculatorOperation(int userInputChoice, double firstOperand, double sec
     switch (userInputChoice)
     {
         case 1:
-            result = performAddition(firstOperand, secondOperand);
+            result = addition(firstOperand, secondOperand);
             displayResult(result, firstOperand, secondOperand, "Addition");
             break;
 
         case 2:
-            result = performSubtraction(firstOperand, secondOperand);
+            result = subtraction(firstOperand, secondOperand);
             displayResult(result, firstOperand, secondOperand, "Subtraction");
             break;
 
         case 3:
-            result = performMultiplication(firstOperand, secondOperand);
+            result = multiplication(firstOperand, secondOperand);
             displayResult(result, firstOperand, secondOperand, "Multiplication");
             break;
 
@@ -166,6 +52,7 @@ void runCalculatorOperation(int userInputChoice, double firstOperand, double sec
             std::cout << "\nInvalid choice. Please try again.\n";
     }
 }
+
 bool loadMathLibrary(void* &handle)
 {
     bool libraryLoaded = false; 
@@ -213,12 +100,16 @@ int main()
         do
         {
             displayCalculatorMenu();
-            readValidatedInteger(userInputChoice);
+            userInputChoice = readValidatedUserChoice();
 
-            if (userInputChoice >= 1 && userInputChoice <= 4)
-            {
-                readOperands(firstOperand, secondOperand);
-            }
+        if (userInputChoice >= 1 && userInputChoice <= 4)
+        {
+            std ::cout << "Enter first Operand : ";
+            firstOperand = readValidatedOperand();
+
+            std ::cout << "Enter second Operand : ";
+            secondOperand = readValidatedOperand();   
+        }
 
             runCalculatorOperation(userInputChoice, firstOperand, secondOperand);
 
