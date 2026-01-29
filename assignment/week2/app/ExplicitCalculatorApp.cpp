@@ -1,8 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <dlfcn.h>
-#include <stdexcept>
 
+const char LIBRARY_PATH[] = "./lib/libMathExplicit.so";
 typedef double (*MathFunction)(double, double);
 
 MathFunction addition       = nullptr;
@@ -10,7 +10,7 @@ MathFunction subtraction    = nullptr;
 MathFunction multiplication = nullptr;
 MathFunction division       = nullptr;
 
-void displayMenu()
+void displayCalculatorMenu()
 {
     std::cout << "-----------------------------------------\n";
     std::cout << "1. Addition\n";
@@ -20,52 +20,72 @@ void displayMenu()
     std::cout << "5. Exit\n";
 }
 
-bool containsGarbageAfterInput()
+bool checkForGarbageAfterInput()
 {
     char bufferCharacter;
+    bool hasGarbage = false;
 
     while (std::cin.get(bufferCharacter) && bufferCharacter != '\n')
     {
         if (bufferCharacter != ' ' && bufferCharacter != '\t')
         {
-            return true;
-        }           
+            hasGarbage = true; 
+        }
     }
 
-    return false;
+    return hasGarbage;
 }
 
 void readValidatedInteger(int &userInputChoice)
 {
-    while (true)
+    bool inputValid = false;
+
+    while (!inputValid)
     {
         std::cout << "\nPlease enter your choice : ";
 
-        if (!(std::cin >> userInputChoice) || containsGarbageAfterInput())
+        std::cin >> userInputChoice;
+
+        if (std::cin.fail())
         {
-            std::cout << "Error: Please enter a valid integer value only.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
+            std::cout << "Error: Please enter a valid integer value only.\n";
         }
+        else if (checkForGarbageAfterInput())
+        {
+            std::cout << "Error: Please enter a valid integer value only.\n";
+        }
+        else
+        {
 
-        return;
+            inputValid = true;
+        }
     }
 }
 
 void readValidatedDouble(double &operandValue)
 {
-    while (true)
+    bool inputValid = false;
+
+    while (!inputValid)
     {
-        if (!(std::cin >> operandValue) || containsGarbageAfterInput())
+        std::cin >> operandValue;
+
+        if (std::cin.fail()) 
         {
-            std::cout << "Error: Please enter a valid number only.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
+            std::cout << "Error: Please enter a valid number only.\n";
         }
-
-        return;
+        else if (checkForGarbageAfterInput())
+        {
+            std::cout << "Error: Please enter a valid number only.\n";
+        }
+        else
+        {
+            inputValid = true;
+        }
     }
 }
 
@@ -94,12 +114,7 @@ double performMultiplication(double a, double b)
 }
 
 double performDivision(double a, double b)
-{
-    if (b == 0)
-    {
-        throw std::runtime_error("Division by zero");
-    }
-        
+{      
     return division(a, b);
 }
 
@@ -110,86 +125,108 @@ void displayResult(double result, double a, double b, const std::string &operati
               << " is " << result << "\n";
 }
 
-int main()
+void runCalculatorOperation(int userInputChoice, double firstOperand, double secondOperand)
 {
-    void* handle = dlopen("./lib/libMathExplicit.so", RTLD_LAZY);
+    double result;
 
-    if (!handle)
+    switch (userInputChoice)
     {
-        std::cerr << "Error loading library: " << dlerror() << "\n";
+        case 1:
+            result = performAddition(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Addition");
+            break;
+
+        case 2:
+            result = performSubtraction(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Subtraction");
+            break;
+
+        case 3:
+            result = performMultiplication(firstOperand, secondOperand);
+            displayResult(result, firstOperand, secondOperand, "Multiplication");
+            break;
+
+        case 4:
+            if (secondOperand == 0.0)
+            {
+                std::cout << "\nError: Division by zero is not allowed.\n";
+            }
+            else
+            {
+                result = division(firstOperand, secondOperand);
+                displayResult(result, firstOperand, secondOperand, "Division");
+            }
+            break;
+
+        case 5:
+            std::cout << "\nExiting program...\n";
+            break;            
+
+        default:
+            std::cout << "\nInvalid choice. Please try again.\n";
     }
-    else
+}
+bool loadMathLibrary(void* &handle)
+{
+    bool libraryLoaded = false; 
+
+    handle = dlopen(LIBRARY_PATH, RTLD_LAZY);
+
+    if (handle)
     {
         addition       = (MathFunction)dlsym(handle, "addition");
         subtraction    = (MathFunction)dlsym(handle, "subtraction");
         multiplication = (MathFunction)dlsym(handle, "multiplication");
         division       = (MathFunction)dlsym(handle, "division");
 
-        if (!addition || !subtraction || !multiplication || !division)
+        if (addition && subtraction && multiplication && division)
         {
-            std::cerr << "Error loading symbols\n";
-            dlclose(handle);
+            libraryLoaded = true;
         }
         else
         {
-            int userInputChoice;
-            double result, firstOperand, secondOperand;
-
-            do
-            {
-                displayMenu();
-                readValidatedInteger(userInputChoice);
-
-                if (userInputChoice >= 1 && userInputChoice <= 4)
-                {
-                    readOperands(firstOperand, secondOperand);
-                }
-                    
-                switch (userInputChoice)
-                {
-                    case 1:
-                        result = performAddition(firstOperand, secondOperand);
-                        displayResult(result, firstOperand, secondOperand, "Addition");
-                        break;
-
-                    case 2:
-                        result = performSubtraction(firstOperand, secondOperand);
-                        displayResult(result, firstOperand, secondOperand, "Subtraction");
-                        break;
-
-                    case 3:
-                        result = performMultiplication(firstOperand, secondOperand);
-                        displayResult(result, firstOperand, secondOperand, "Multiplication");
-                        break;
-
-                    case 4:
-                        try
-                        {
-                            result = performDivision(firstOperand, secondOperand);
-                            displayResult(result, firstOperand, secondOperand, "Division");
-                        }
-                        catch (const std::runtime_error &error)
-                        {
-                            std::cout << "\nError: " << error.what() << "\n";
-                        }
-                        break;
-
-                    case 5:
-                        std::cout << "\nExiting program...\n";
-                        break;
-
-                    default:
-                        std::cout << "\nInvalid choice. Please try again.\n";
-                }
-
-            } while (userInputChoice != 5);
-
-            dlclose(handle);
-
-            std::cout << "Thank you for using the program\n";
-        }     
-
+            std::cerr << "Error loading symbols from library.\n";
+            dlclose(handle); 
+        }
+    }
+    else
+    {
+        std::cerr << "Error loading library: " << dlerror() << "\n";
     }
 
+    return libraryLoaded;
+}
+
+int main()
+{
+    void* handle = nullptr;
+
+    if (!loadMathLibrary(handle)) 
+    {
+        std::cout << "Library could not be loaded. Exiting program.\n";
+    }
+    else
+    {
+        int userInputChoice;
+        double firstOperand, secondOperand ;
+
+        do
+        {
+            displayCalculatorMenu();
+            readValidatedInteger(userInputChoice);
+
+            if (userInputChoice >= 1 && userInputChoice <= 4)
+            {
+                readOperands(firstOperand, secondOperand);
+            }
+
+            runCalculatorOperation(userInputChoice, firstOperand, secondOperand);
+
+        } while (userInputChoice != 5);
+
+        dlclose(handle);
+    }
+
+    std::cout << "Thank you for using the program\n";
     return 0;
 }

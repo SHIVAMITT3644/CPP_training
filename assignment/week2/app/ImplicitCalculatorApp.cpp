@@ -1,8 +1,11 @@
 #include <iostream>
 #include <limits>
-#include "MathLibrary.h"
+#include "Addition.h"
+#include "Subtraction.h"
+#include "Multiplication.h"
+#include "Division.h"
 
-void displayMenu()
+void displayCalculatorMenu()
 {
     std::cout << "-----------------------------------------\n";
     std::cout << "1. Addition\n";
@@ -12,51 +15,72 @@ void displayMenu()
     std::cout << "5. Exit\n";
 }
 
-bool containsGarbageAfterInput()
+bool checkForGarbageAfterInput()
 {
     char bufferCharacter;
+    bool hasGarbage = false;
 
     while (std::cin.get(bufferCharacter) && bufferCharacter != '\n')
     {
         if (bufferCharacter != ' ' && bufferCharacter != '\t')
         {
-            return true;
+            hasGarbage = true; 
         }
     }
 
-    return false;
+    return hasGarbage;
 }
 
 void readValidatedInteger(int &userInputChoice)
 {
-    while (true)
-    {
-        std::cout << "\nplease enter your choice : ";
+    bool inputValid = false;
 
-        if (!(std::cin >> userInputChoice) || containsGarbageAfterInput())
+    while (!inputValid)
+    {
+        std::cout << "\nPlease enter your choice : ";
+
+        std::cin >> userInputChoice;
+
+        if (std::cin.fail())
         {
-            std::cout << "Error: Please enter a valid integer value only.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
+            std::cout << "Error: Please enter a valid integer value only.\n";
         }
+        else if (checkForGarbageAfterInput())
+        {
+            std::cout << "Error: Please enter a valid integer value only.\n";
+        }
+        else
+        {
 
-        return;
+            inputValid = true;
+        }
     }
 }
 
 void readValidatedDouble(double &operandValue)
 {
-    while (true)
+    bool inputValid = false;
+
+    while (!inputValid)
     {
-        if (!(std::cin >> operandValue) || containsGarbageAfterInput())
+        std::cin >> operandValue;
+
+        if (std::cin.fail()) 
         {
-            std::cout << "Error: Please enter a valid number only.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
+            std::cout << "Error: Please enter a valid number only.\n";
         }
-        return;
+        else if (checkForGarbageAfterInput())
+        {
+            std::cout << "Error: Please enter a valid number only.\n";
+        }
+        else
+        {
+            inputValid = true;
+        }
     }
 }
 
@@ -95,23 +119,12 @@ void displayResult(double result, double firstOperand, double secondOperand, std
               << operation << " of " << firstOperand << " and " << secondOperand << " is " << result << "\n";
 }
 
-int main()
+void runCalculatorOperation(int choice, double firstOperand, double secondOperand)
 {
-    int userInputChoice;
-    double result, firstOperand, secondOperand;
+    double result;
 
-    do
+    switch (choice)
     {
-        displayMenu();
-        readValidatedInteger(userInputChoice);
-
-        if (userInputChoice >= 1 && userInputChoice <= 4)
-        {
-            readOperands(firstOperand, secondOperand);
-        }
-
-        switch (userInputChoice)
-        {
         case 1:
             result = performAddition(firstOperand, secondOperand);
             displayResult(result, firstOperand, secondOperand, "Addition");
@@ -128,27 +141,45 @@ int main()
             break;
 
         case 4:
-            try
+            if (secondOperand == 0.0)
             {
-                result = performDivision(firstOperand, secondOperand);
-                displayResult(result, firstOperand, secondOperand, "Division");
+                std::cout << "\nError: Division by zero is not allowed.\n";
             }
-            catch (const std::runtime_error &error)
+            else
             {
-                std::cout << "\nError: " << error.what() << "\n";
+                result = division(firstOperand, secondOperand);
+                displayResult(result, firstOperand, secondOperand, "Division");
             }
             break;
 
         case 5:
-            std::cout << "\nExiting program...\n";  
-            break;
+            std::cout << "\nExiting program...\n";
+            break; 
 
         default:
             std::cout << "\nInvalid choice. Please try again.\n";
+    }
+}
+
+int main()
+{
+    int userInputChoice;
+    double firstOperand, secondOperand;
+
+    do
+    {
+        displayCalculatorMenu();
+        readValidatedInteger(userInputChoice);
+
+        if (userInputChoice >= 1 && userInputChoice <= 4)
+        {
+            readOperands(firstOperand, secondOperand);
         }
+
+        runCalculatorOperation(userInputChoice, firstOperand, secondOperand);
 
     } while (userInputChoice != 5);
 
-    std ::cout << "Thankyou for using the program\n";
+    std::cout << "Thank you for using the program\n";
     return 0;
 }
