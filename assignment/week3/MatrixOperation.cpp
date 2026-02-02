@@ -1,6 +1,13 @@
 #include <iostream>
 #include <limits>
 
+struct Matrix
+{
+    int rowLength;
+    int columnLength;
+    double **data;
+};
+
 bool hasExtraCharactersInInput()
 {
     char bufferCharacter;
@@ -39,13 +46,13 @@ bool isInputValid()
     return inputValid;
 }
 
-int readValidatedUserInput()
+const int readValidatedUserInput()
 {
-    int userInput;
-
+   int userInput;
     while (true)
     {
         std::cin >> userInput;
+        
 
         if (isInputValid())
         {
@@ -53,7 +60,9 @@ int readValidatedUserInput()
         }
     }
 
-    return userInput;
+    const int returnUserInput = userInput;
+
+    return returnUserInput;
 }
 
 double readValidatedMatrixValue(int rowIndex, int columnIndex)
@@ -107,174 +116,181 @@ double **allocateMemoryForMatrix(int rowLength, int columnLength)
     return matrix;
 }
 
-void deleteMemoryOfMatrix(double **matrix, int rowLength)
+void deleteMemoryOfMatrix(Matrix &matrix)
 {
-    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
+    for (int rowIndex = 0; rowIndex < matrix.rowLength; rowIndex++)
     {
-        delete[] *(matrix + rowIndex);
+        delete[] *(matrix.data + rowIndex);
     }
 
-    delete[] matrix;
+    delete[] matrix.data;
+    matrix.data = nullptr;
 }
 
-void readMatrixFromUser(double **matrix, int rowLength, int columnLength)
+void readMatrixFromUser(Matrix &matrix)
 {
     std::cout << "\nPlease enter your matrix\n";
 
-    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
+    for (int rowIndex = 0; rowIndex < matrix.rowLength; rowIndex++)
     {
-        for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+        for (int columnIndex = 0; columnIndex < matrix.columnLength; columnIndex++)
         {
-            *(*(matrix + rowIndex) + columnIndex) = readValidatedMatrixValue(rowIndex, columnIndex);
+            *(*(matrix.data + rowIndex) + columnIndex) = readValidatedMatrixValue(rowIndex, columnIndex);
         }
     }
 }
 
-void displayMatrix(double **matrix, int rowLength, int columnLength, const std::string &message)
+void displayMatrix(const Matrix &matrix, const std::string &message)
 {
     std::cout << "\nMatrix " << message << " Result:\n\n";
-    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
+
+    for (int rowIndex = 0; rowIndex < matrix.rowLength; rowIndex++)
     {
-        for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+        for (int columnIndex = 0; columnIndex < matrix.columnLength; columnIndex++)
         {
-            std::cout << *(*(matrix + rowIndex) + columnIndex) << " ";
+            std::cout << *(*(matrix.data + rowIndex) + columnIndex) << " ";
         }
         std::cout << "\n";
     }
 }
 
-void performMatrixAddition(double **firstMatrix, double **secondMatrix, double **sumMatrix, int rowLength, int columnLength)
+void performMatrixAddition(const Matrix &firstMatrix, const Matrix &secondMatrix, Matrix &sumMatrix)
 {
-    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
+    for (int rowIndex = 0; rowIndex < firstMatrix.rowLength; rowIndex++)
     {
-        for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+        for (int columnIndex = 0; columnIndex < firstMatrix.columnLength; columnIndex++)
         {
-            *(*(sumMatrix + rowIndex) + columnIndex) = *(*(firstMatrix + rowIndex) + columnIndex) + *(*(secondMatrix + rowIndex) + columnIndex);
+            *(*(sumMatrix.data + rowIndex) + columnIndex) =
+                *(*(firstMatrix.data + rowIndex) + columnIndex) +
+                *(*(secondMatrix.data + rowIndex) + columnIndex);
         }
     }
 }
 
-void performMatrixMultiplication(double **firstMatrix, double **secondMatrix, double **multiplicationMatrix,
-                                 int firstMatrixRowLength, int firstMatrixColumnLength, int secondMatrixColumnLength)
+void performMatrixMultiplication(const Matrix &firstMatrix, const Matrix &secondMatrix, Matrix &multiplicationMatrix)
 {
-    for (int rowIndex = 0; rowIndex < firstMatrixRowLength; rowIndex++)
+    for (int rowIndex = 0; rowIndex < firstMatrix.rowLength; rowIndex++)
     {
-        for (int columnIndex = 0; columnIndex < secondMatrixColumnLength; columnIndex++)
+        for (int columnIndex = 0; columnIndex < secondMatrix.columnLength; columnIndex++)
         {
-            *(*(multiplicationMatrix + rowIndex) + columnIndex) = 0;
+            *(*(multiplicationMatrix.data + rowIndex) + columnIndex) = 0;
 
-            for (int innerIndex = 0; innerIndex < firstMatrixColumnLength; innerIndex++)
+            for (int innerIndex = 0; innerIndex < firstMatrix.columnLength; innerIndex++)
             {
-                *(*(multiplicationMatrix + rowIndex) + columnIndex) += (*(*(firstMatrix + rowIndex) + innerIndex)) * (*(*(secondMatrix + innerIndex) + columnIndex));
+                *(*(multiplicationMatrix.data + rowIndex) + columnIndex) +=
+                    (*(*(firstMatrix.data + rowIndex) + innerIndex)) *
+                    (*(*(secondMatrix.data + innerIndex) + columnIndex));
             }
         }
     }
 }
 
-bool areMatrixAdditionPossible(int firstMatrixRowLength, int secondMatrixRowLength, int firstMatrixColumnLength, int secondMatrixColumnLength)
+bool areMatrixAdditionPossible(const Matrix &firstMatrix, const Matrix &secondMatrix)
 {
-    bool isAdditionPossible = true;
-
-    if (firstMatrixRowLength != secondMatrixRowLength || firstMatrixColumnLength != secondMatrixColumnLength)
+    if (firstMatrix.rowLength != secondMatrix.rowLength ||
+        firstMatrix.columnLength != secondMatrix.columnLength)
     {
         std::cout << "\nError: Matrix addition not possible\n";
-        isAdditionPossible = false;
+        return false;
     }
 
-    return isAdditionPossible;
+    return true;
 }
 
-bool areMatrixMultiplicationPossible(int secondMatrixRowLength, int firstMatrixColumnLength)
+bool areMatrixMultiplicationPossible(const Matrix &firstMatrix, const Matrix &secondMatrix)
 {
-    bool isMultiplicationPossible = true;
-
-    if (firstMatrixColumnLength != secondMatrixRowLength)
+    if (firstMatrix.columnLength != secondMatrix.rowLength)
     {
         std::cout << "\nError: Matrix multiplication not possible\n";
-        isMultiplicationPossible = false;
+        return false;
     }
 
-    return isMultiplicationPossible;
-}
-
-void performMatrixOperations(double **firstMatrix, double **secondMatrix, int firstMatrixRowLength,
-                             int firstMatrixColumnLength, int secondMatrixRowLength, int secondMatrixColumnLength)
-{
-    if (areMatrixAdditionPossible(firstMatrixRowLength, secondMatrixRowLength, firstMatrixColumnLength, secondMatrixColumnLength))
-    {
-        double **sumMatrix = allocateMemoryForMatrix(firstMatrixRowLength, firstMatrixColumnLength);
-
-        performMatrixAddition(firstMatrix, secondMatrix, sumMatrix,
-                              firstMatrixRowLength, firstMatrixColumnLength);
-
-        displayMatrix(sumMatrix, firstMatrixRowLength, firstMatrixColumnLength, "Addition");
-
-        deleteMemoryOfMatrix(sumMatrix, firstMatrixRowLength);
-    }
-
-    if (areMatrixMultiplicationPossible(secondMatrixRowLength, firstMatrixColumnLength))
-    {
-        double **multiplicationMatrix = allocateMemoryForMatrix(firstMatrixRowLength, secondMatrixColumnLength);
-
-        performMatrixMultiplication(firstMatrix, secondMatrix, multiplicationMatrix,
-                                    firstMatrixRowLength, firstMatrixColumnLength, secondMatrixColumnLength);
-
-        displayMatrix(multiplicationMatrix, firstMatrixRowLength, secondMatrixColumnLength, "Multiplication");
-
-        deleteMemoryOfMatrix(multiplicationMatrix, firstMatrixRowLength);
-    }
+    return true;
 }
 
 bool validateMatrixDimensions(int rowLength, int columnLength)
 {
-    bool isMatrixDimensionsValid = true;
-
     if (rowLength <= 0 || columnLength <= 0)
     {
         std::cout << "\nError: Matrix dimensions must be greater than zero.\n";
-        isMatrixDimensionsValid = false;
+        return false;
     }
 
-    return isMatrixDimensionsValid;
+    return true;
 }
 
-void readDimensionOfMatrix(int &rowLength, int &columnLength, const std::string &messageForRowLength, const std::string &messageForColumnLength)
+void readDimensionOfMatrix(Matrix &matrix, const std::string &messageForRowLength, const std::string &messageForColumnLength)
 {
     while (true)
     {
         std::cout << "\n" << messageForRowLength;
-        rowLength = readValidatedUserInput();
+        matrix.rowLength = readValidatedUserInput();;
 
         std::cout << messageForColumnLength;
-        columnLength = readValidatedUserInput();
+        matrix.columnLength = readValidatedUserInput();
 
-        if (validateMatrixDimensions(rowLength, columnLength))
+        if (validateMatrixDimensions(matrix.rowLength, matrix.columnLength))
         {
             break;
         }
     }
 }
 
+void performMatrixOperations(const Matrix &firstMatrix, const Matrix &secondMatrix)
+{
+    if (areMatrixAdditionPossible(firstMatrix, secondMatrix))
+    {
+        Matrix sumMatrix;
+        sumMatrix.rowLength = firstMatrix.rowLength;
+        sumMatrix.columnLength = firstMatrix.columnLength;
+        sumMatrix.data = allocateMemoryForMatrix(sumMatrix.rowLength, sumMatrix.columnLength);
+
+        performMatrixAddition(firstMatrix, secondMatrix, sumMatrix);
+        displayMatrix(sumMatrix, "Addition");
+        deleteMemoryOfMatrix(sumMatrix);
+    }
+
+    if (areMatrixMultiplicationPossible(firstMatrix, secondMatrix))
+    {
+        Matrix multiplicationMatrix;
+
+        multiplicationMatrix.rowLength = firstMatrix.rowLength;
+        multiplicationMatrix.columnLength = secondMatrix.columnLength;
+
+        multiplicationMatrix.data =  allocateMemoryForMatrix(multiplicationMatrix.rowLength,  multiplicationMatrix.columnLength);
+
+        performMatrixMultiplication(firstMatrix, secondMatrix, multiplicationMatrix);
+
+        displayMatrix(multiplicationMatrix, "Multiplication");
+
+        deleteMemoryOfMatrix(multiplicationMatrix);
+    }
+}
+
 int main()
 {
-    int userInputChoice, firstMatrixRowLength, firstMatrixColumnLength, secondMatrixRowLength, secondMatrixColumnLength;
+    int userInputChoice;
 
     do
     {
-        readDimensionOfMatrix(firstMatrixRowLength, firstMatrixColumnLength, "Enter rows of first matrix : ", "Enter columns of first matrix : ");
+        Matrix firstMatrix, secondMatrix;
 
-        double **firstMatrix = allocateMemoryForMatrix(firstMatrixRowLength, firstMatrixColumnLength);
-        readMatrixFromUser(firstMatrix, firstMatrixRowLength, firstMatrixColumnLength);
+        readDimensionOfMatrix(firstMatrix, "Enter rows of first matrix : ", "Enter columns of first matrix : ");
 
-        readDimensionOfMatrix(secondMatrixRowLength, secondMatrixColumnLength, "Enter rows of second matrix : ", "Enter columns of second matrix : ");
+        firstMatrix.data = allocateMemoryForMatrix(firstMatrix.rowLength, firstMatrix.columnLength);
 
-        double **secondMatrix = allocateMemoryForMatrix(secondMatrixRowLength, secondMatrixColumnLength);
-        readMatrixFromUser(secondMatrix, secondMatrixRowLength, secondMatrixColumnLength);
+        readMatrixFromUser(firstMatrix);
 
-        performMatrixOperations(firstMatrix, secondMatrix, firstMatrixRowLength, firstMatrixColumnLength, secondMatrixRowLength, secondMatrixColumnLength);
+        readDimensionOfMatrix(secondMatrix, "Enter rows of second matrix : ", "Enter columns of second matrix : ");
 
-        deleteMemoryOfMatrix(firstMatrix, firstMatrixRowLength);
-        deleteMemoryOfMatrix(secondMatrix, secondMatrixRowLength);
+        secondMatrix.data = allocateMemoryForMatrix(secondMatrix.rowLength, secondMatrix.columnLength);
+
+        readMatrixFromUser(secondMatrix);
+
+        performMatrixOperations(firstMatrix, secondMatrix);
+
+        deleteMemoryOfMatrix(firstMatrix);
+        deleteMemoryOfMatrix(secondMatrix);
 
         userInputChoice = readUserChoice();
 
