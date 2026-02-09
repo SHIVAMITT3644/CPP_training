@@ -104,7 +104,7 @@ void ReadUserInput::readMatrixDimension(int& rowLength, int& columnLength, const
     columnLength = readValidMatrixDimensionLength(columnMessage);
 }
 
-int ReadUserInput::readUserChoice()
+int ReadUserInput::readContinueProgramChoice()
 {
     int userChoice = 0;
 

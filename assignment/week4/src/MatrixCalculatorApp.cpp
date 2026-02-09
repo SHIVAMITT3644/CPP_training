@@ -47,7 +47,7 @@ void runMatrixCalculator()
            multiplicationMatrix.displayMatrix("\nThe Multiplication of Matrix is : \n");
         }
 
-        userInputChoice = readUserInput.readUserChoice();
+        userInputChoice = readUserInput.readContinueProgramChoice();
 
     } while (userInputChoice != 0);
 

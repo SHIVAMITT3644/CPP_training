@@ -28,7 +28,7 @@ bool MatrixUtils::validateMatrixOperation(int matrixOperationChoice, firstMatrix
     if (!isCalculationPossible)
     {
         ReadUserInput readUserInput;
-        userInputChoice = readUserInput.readUserChoice();
+        userInputChoice = readUserInput.readContinueProgramChoice();
     }
 
     return isCalculationPossible;
