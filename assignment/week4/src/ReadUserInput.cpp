@@ -22,18 +22,18 @@ void ReadUserInput::readCompleteLineWithNoSkipWS(std::istream& inputStream, std:
 
 int ReadUserInput::readValidatedUserInput(const std::string& inputMessage)
 {
-    bool isValid = false;
+    bool isInputValid = false;
     int validatedValue = 0;
 
-    while (!isValid)
+    while (!isInputValid)
     {
         std::cout << inputMessage;
 
         readCompleteLineWithNoSkipWS(std::cin, rawInput);
 
-        isValid = validateWholeNumber(rawInput, validatedValue);
+        isInputValid = validateWholeNumber(rawInput, validatedValue);
 
-        if (!isValid)
+        if (!isInputValid)
         {
             std::cout << "\nError: Please enter a valid whole number.\n";
         }
@@ -44,18 +44,18 @@ int ReadUserInput::readValidatedUserInput(const std::string& inputMessage)
 
 double ReadUserInput::readValidatedMatrixValue(int rowIndex, int columnIndex)
 {
-    bool isValid = false;
+    bool isInputValid = false;
     double validatedValue = 0.0;
 
-    while (!isValid)
+    while (!isInputValid)
     {
         std::cout << "Enter value for Position Matrix["  << rowIndex << "][" << columnIndex << "] : ";
 
         readCompleteLineWithNoSkipWS(std::cin, rawInput);
 
-        isValid = validateDecimalNumber(rawInput, validatedValue);
+        isInputValid = validateDecimalNumber(rawInput, validatedValue);
 
-        if (!isValid)
+        if (!isInputValid)
         {
             std::cout << "\nError: Please enter a valid numeric value.\n";
         }
@@ -66,15 +66,14 @@ double ReadUserInput::readValidatedMatrixValue(int rowIndex, int columnIndex)
 
 int ReadUserInput::readMatrixOperationChoice()
 {
-    int userChoice = 0;
+    int matrixOperationChoice = 0;
 
     while (true)
     {
-        userChoice = readValidatedUserInput("Enter your choice for matrix operation : ");
-
-        if (userChoice == 1 || userChoice == 2)
+        matrixOperationChoice = readValidatedUserInput("Enter your choice for matrix operation : ");
+        if (matrixOperationChoice == 1 || matrixOperationChoice == 2)
         {
-            return userChoice;
+            return matrixOperationChoice;
         }
 
         std::cout << "\nPlease Enter Valid Choice\n";
@@ -106,15 +105,14 @@ void ReadUserInput::readMatrixDimension(int& rowLength, int& columnLength, const
 
 int ReadUserInput::readContinueProgramChoice()
 {
-    int userChoice = 0;
+    int userContinueProgramChoice = 0;
 
     while (true)
     {
-        userChoice = readValidatedUserInput("\nEnter 1 to continue and Enter 0 to exit the program : ");
-
-        if (userChoice == 0 || userChoice == 1)
+        userContinueProgramChoice = readValidatedUserInput("\nEnter 1 to continue and Enter 0 to exit the program : ");
+        if (userContinueProgramChoice == 0 || userContinueProgramChoice == 1)
         {
-            return userChoice;
+            return userContinueProgramChoice;
         }
 
         std::cout << "\nPlease Enter Valid Choice\n";

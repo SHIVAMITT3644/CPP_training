@@ -1,9 +1,9 @@
 #include "CheckUserInputValidity.h"
 
-bool CheckUserInputValidity::validateWholeNumber(const std::string& inputFromUser, int& value)
+bool CheckUserInputValidity::validateWholeNumber(const std::string& inputFromUser, int& finalValue)
 {
     bool isInputValid = true;
-    value = 0;
+    finalValue = 0;
 
     if (inputFromUser.length() == 0)
     {
@@ -25,7 +25,7 @@ bool CheckUserInputValidity::validateWholeNumber(const std::string& inputFromUse
                 break;
             }
 
-            value = value * 10 + (currentCharacter - '0');
+            finalValue = finalValue * 10 + (currentCharacter - '0');
         }
     }
 
@@ -34,29 +34,29 @@ bool CheckUserInputValidity::validateWholeNumber(const std::string& inputFromUse
 
 bool CheckUserInputValidity::hasValidDecimalFormatBoundaries(const std::string& inputFromUser)
 {
-    bool isValid = true;
+    bool isInputValid = true;
 
     if (inputFromUser.length() == 0)
     {
-        isValid = false;
+        isInputValid = false;
     }
     else if (inputFromUser[0] == ' ' || inputFromUser[inputFromUser.length() - 1] == ' ')
     {
-        isValid = false;
+        isInputValid = false;
     }
 
-    return isValid;
+    return isInputValid;
 }
 
-bool CheckUserInputValidity::convertDecimalStringToValue(const std::string& inputFromUser, double& value)
+bool CheckUserInputValidity::convertDecimalStringToValue(const std::string& inputFromUser, double& finalValue)
 {
-    bool isValid = true;
+    bool isInputValid = true;
 
     int decimalPointCount = 0;
     bool readingFractionalPart = false;
     double fractionalDivisor = 1.0;
 
-    for (int position = 0; position < inputFromUser.length() && isValid; position++)
+    for (int position = 0; position < inputFromUser.length() && isInputValid; position++)
     {
         char currentCharacter = inputFromUser[position];
 
@@ -66,7 +66,7 @@ bool CheckUserInputValidity::convertDecimalStringToValue(const std::string& inpu
 
             if (decimalPointCount > 1)
             {
-                isValid = false;
+                isInputValid = false;
             }
             else
             {
@@ -77,36 +77,36 @@ bool CheckUserInputValidity::convertDecimalStringToValue(const std::string& inpu
         {
             if (!readingFractionalPart)
             {
-                value = value * 10 + (currentCharacter - '0');
+                finalValue = finalValue * 10 + (currentCharacter - '0');
             }
             else
             {
                 fractionalDivisor *= 10;
-                value += (currentCharacter - '0') / fractionalDivisor;
+                finalValue += (currentCharacter - '0') / fractionalDivisor;
             }
         }
         else
         {
-            isValid = false;
+            isInputValid = false;
         }
     }
 
-    return isValid;
+    return isInputValid;
 }
 
-bool CheckUserInputValidity::validateDecimalNumber(const std::string& inputFromUser, double& value)
+bool CheckUserInputValidity::validateDecimalNumber(const std::string& inputFromUser, double& finalValue)
 {
-    bool isValid = true;
-    value = 0.0;
+    bool isInputValid = true;
+    finalValue = 0.0;
 
     if (!hasValidDecimalFormatBoundaries(inputFromUser))
     {
-        isValid = false;
+        isInputValid = false;
     }
     else
     {
-        isValid = convertDecimalStringToValue(inputFromUser, value);
+        isInputValid = convertDecimalStringToValue(inputFromUser, finalValue);
     }
 
-    return isValid;
+    return isInputValid;
 }
