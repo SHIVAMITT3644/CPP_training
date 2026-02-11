@@ -13,17 +13,19 @@ Matrix::Matrix(int rowLength, int columnLength)
     this->columnLength = columnLength;
 }
 
-void Matrix::readMatrixFromUser(const std::string& message)
+int Matrix::getRowLength() const
 {
-    std::cout << message;
+    return rowLength;
+}
 
-    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
-    {
-        for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
-        {
-            *(*(matrix + rowIndex) + columnIndex) = readValidatedMatrixValue(rowIndex, columnIndex);
-        }
-    }
+int Matrix::getColumnLength() const
+{
+    return columnLength;
+}
+
+double **Matrix::getMatrixPointer()
+{
+    return matrix;
 }
 
 void Matrix::displayMatrix(const std::string &message)
@@ -40,7 +42,7 @@ void Matrix::displayMatrix(const std::string &message)
     }
 }
 
-Matrix Matrix::operator +(const Matrix &secondMatrix)
+Matrix Matrix::operator +(const Matrix &secondMatrix) const
 {  
     Matrix sumMatrix(rowLength , columnLength);
 
@@ -57,7 +59,7 @@ Matrix Matrix::operator +(const Matrix &secondMatrix)
     return sumMatrix;
 }
 
-Matrix Matrix::operator *(const Matrix &secondMatrix)
+Matrix Matrix::operator *(const Matrix &secondMatrix) const
 {
     Matrix multiplicationMatrix(rowLength , secondMatrix.columnLength);
 
@@ -77,6 +79,18 @@ Matrix Matrix::operator *(const Matrix &secondMatrix)
     }
 
     return multiplicationMatrix;
+}
+
+void Matrix::operator =(const Matrix &secondMatrix) const
+{
+    for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
+    {
+        for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+        {
+            *(*(matrix + rowIndex) + columnIndex) =
+                *(*(secondMatrix.matrix + rowIndex) + columnIndex);
+        }
+    }
 }
 
 Matrix::~Matrix()
