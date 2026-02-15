@@ -2,9 +2,9 @@
 #define INPUT_H 
 #include <iostream>
 
-int readValidatedIntegerNumber(const std::string& inputMessage);
-double readValidatedDecimalNumber(const std::string& inputMessage);
-int readContinueProgramChoice();
+int readValidUserInput(const std::string& inputMessage);
+double readValidFloatingInput(const std::string& inputMessage);
 void readCompleteLineInput(std::istream& inputStream, std::string& output , const std::string& message);
+std::string readHiddenPassword(const std::string& message);
 
 #endif

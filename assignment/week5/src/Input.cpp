@@ -1,26 +1,48 @@
 #include <iostream>
 #include <string>
 #include <istream>
+#include <termios.h>
+#include <unistd.h>
 #include "Constants.h"
 
-void readCompleteLineInput(std::istream &inputStream, std::string &output, const std::string &message)
+void readCompleteLineInput(std::istream &inputStream, std::string &output,  const std::string &message)
 {
-    output.clear();
-    inputStream >> std::noskipws;
-
-    std::cout << message;
-    char currentCharacter;
-
-    while (inputStream >> currentCharacter)
+    while (true)
     {
-        if (currentCharacter == '\n')
+        output.clear();
+        inputStream >> std::noskipws;
+
+        std::cout << message;
+
+        char currentCharacter;
+        bool hasNonSpaceCharacter = false;
+
+        while (inputStream >> currentCharacter)
+        {
+            if (currentCharacter == '\n')
+            {
+                break;
+            }
+
+            output.push_back(currentCharacter);
+
+            if (currentCharacter != ' ' && currentCharacter != '\t')
+            {
+                hasNonSpaceCharacter = true;
+            }
+        }
+
+        inputStream >> std::skipws;
+
+        if (!hasNonSpaceCharacter)
+        {
+            std::cout << INVALID_STRING_INPUT_ERROR_MESSAGE;
+        }
+        else
         {
             break;
         }
-        output.push_back(currentCharacter);
     }
-
-    inputStream >> std::skipws;
 }
 
 bool hasValidNumericBoundaries(const std::string &input)
@@ -189,7 +211,7 @@ bool validateDecimalNumber(const std::string &input, double &finalValue)
     return isValid;
 }
 
-int readValidatedIntegerNumber(const std::string &inputMessage)
+int readValidUserInput(const std::string &inputMessage)
 {
     bool isInputValid = false;
     int validatedValue = 0;
@@ -210,7 +232,7 @@ int readValidatedIntegerNumber(const std::string &inputMessage)
     return validatedValue;
 }
 
-double readValidatedDecimalNumber(const std::string &inputMessage)
+double readValidFloatingInput(const std::string &inputMessage)
 {
     bool isInputValid = false;
     double validatedValue = 0.0;
@@ -231,18 +253,45 @@ double readValidatedDecimalNumber(const std::string &inputMessage)
     return validatedValue;
 }
 
-int readContinueProgramChoice()
+std::string readHiddenPassword(const std::string& message)
 {
-    int userContinueProgramChoice = 0;
+    std::string password;
+    char ch;
+    std::cout << message;
+
+    termios oldt, newt;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+
+    newt.c_lflag &= ~(ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
     while (true)
     {
-        userContinueProgramChoice = readValidatedIntegerNumber(CONTINUE_PROGRAM_MESSAGE);
-        if (userContinueProgramChoice == 0 || userContinueProgramChoice == 1)
-        {
-            return userContinueProgramChoice;
-        }
+        ch = getchar();
 
-        std::cout << INVALID_INPUT_ERROR_MESSAGE;
+        if (ch == '\n')
+        {
+            break;
+        }
+            
+        if (ch == 127 || ch == '\b')
+        {
+            if (!password.empty())
+            {
+                password.pop_back();
+                std::cout << "\b \b";
+            }
+        }
+        else
+        {
+            password.push_back(ch);
+            std::cout << "*";
+        }
     }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+    std::cout << std::endl;
+    return password;
 }

@@ -9,7 +9,7 @@ class Admin : public User
     public:
     void showMenu() const override;
     
-    Admin(const std::string &userName, const std::string &email, const std::string &password);
+    Admin(const std::string &name, const std::string &userName, const std::string &password);
     void createAccountHolderAccount(Bank& bank);
     void deleteAccountHolderAccount(Bank& bank ,int accountNumber, Bank::RemovalType type);
     void viewAllAccountHolders(const Bank& bank) const;

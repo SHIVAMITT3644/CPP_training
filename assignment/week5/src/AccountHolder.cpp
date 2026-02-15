@@ -4,10 +4,10 @@
 #include "Account.h"
 #include "Bank.h"
 
-AccountHolder::AccountHolder(const std::string &name, const std::string &email, const std::string &password, int intialBalance)
+AccountHolder::AccountHolder(const std::string &name, const std::string &userName, const std::string &password, int intialBalance)
 {
-    setUserName(name);
-    setEmail(email);
+    setName(name);
+    setUserName(userName);
     setPassword(password);
     account = new Account(Bank::accountNumberGenerator, intialBalance) ;
     Bank::accountNumberGenerator++;
@@ -25,21 +25,15 @@ Account* AccountHolder::getAccount() const
 
 void AccountHolder::showMenu() const
 {
-    std::cout << "\n-----------------------------------\n";
-    std::cout << "\nWelcome, " << getUserName() << "!\n";
-    std::cout << "1. View Account Details\n";
-    std::cout << "2. Deposit Funds\n";
-    std::cout << "3. Withdraw Funds\n";
-    std::cout << "4. View Mini Statement\n";
-    std::cout << "5. View Full Statement\n";
-    std::cout << "6. Logout\n";
-    std::cout << "\n-----------------------------------\n";
+    std::cout << "\n===================================\n";
+    std::cout << "Welcome, " << getName() << "\n";
+    std::cout << ACCOUNT_HOLDER_MENU_BODY;
 }
 
 void AccountHolder::displayUserDetails() const
 {
-    std::cout << "\nAccount Holder Name: " << getUserName() << std::endl;
-    std::cout << "Account Holder Email: " << getUserEmail() << std::endl;
+    std::cout << ACCOUNT_HOLDER_NAME << getName() << std::endl;
+    std::cout << ACCOUNT_HOLDER_USERNAME << getUserName() << std::endl;
 
     if (account != nullptr)
     {
@@ -47,7 +41,6 @@ void AccountHolder::displayUserDetails() const
     }
     else
     {
-        std::cout << "\nNo account associated with this account holder.\n";
+        std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
     }
 }
-

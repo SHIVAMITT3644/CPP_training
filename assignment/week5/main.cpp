@@ -6,7 +6,7 @@
 int main()
 {
     Bank bank("ITT Tech Bank");
-    bank.addUser(new Admin("Shivam Pratap", "shivam123@gmail.com", "admin123"));
+    bank.addUser(new Admin("Shivam Pratap", "shivam123", "admin123"));
 
     runBankSimulator(bank);
 }

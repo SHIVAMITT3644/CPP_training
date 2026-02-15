@@ -1,42 +1,51 @@
-#include "Admin.h"
 #include <iostream>
+#include "Admin.h"
 #include "AccountHolder.h"
 #include "Constants.h"
 #include "Input.h"
 
 void Admin::showMenu() const
 {
-
-    std::cout << "\n-----------------------------------";
-    std::cout << "\nWelcome, " << getUserName() << "!\n";
-    std::cout << "1. Create Account Holder Account\n";
-    std::cout << "2. Delete Account Holder Account\n";
-    std::cout << "3. View All Account Holders\n";
-    std::cout << "4. View Account Holder Balance\n";
-    std::cout << "5. View Account Holder Transaction History\n";
-    std::cout << "6. Logout\n";
-    std::cout << "-----------------------------------\n";
+    std::cout << "\n===================================\n";
+    std::cout << "Welcome, " << getName() << "!\n";
+    std::cout << ADMIN_MENU_BODY;
 }
 
-Admin::Admin(const std::string &userName, const std::string &email, const std::string &password)
+Admin::Admin(const std::string &name, const std::string &userName, const std::string &password)
 {
+    setName(name);
     setUserName(userName);
-    setEmail(email);
     setPassword(password);
 }
 
 void Admin::createAccountHolderAccount(Bank& bank)
 {
-    std::string name, email, password, address, dob;
+    std::string name, userName, password;
     double initialDeposit;
 
-    readCompleteLineInput(std::cin , name , NAME_INPUT_PROMPT);
-    readCompleteLineInput(std::cin , email , EMAIL_INPUT_PROMPT);
-    readCompleteLineInput(std::cin , password , PASSWORD_INPUT_PROMPT);          
-    initialDeposit = readValidatedDecimalNumber(INITIAL_DEPOSIT_INPUT_PROMPT);
+    readCompleteLineInput(std::cin, name, NAME_INPUT_PROMPT);
 
-    User* newAccountHolder = new AccountHolder(name, email, password, initialDeposit);
+    while (true)
+    {
+        userName = User::getValidUserNameInput();
+
+        if (bank.findUser(userName) != nullptr)
+        {
+            std::cout << CREATE_ACCOUT_USER_EXIST_ERROR_MESSAGE;
+        }
+        else
+        {
+            break;
+        }
+    }
+    password = User::getValidPasswordInput();
+    initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+
+    User* newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
     bank.addUser(newAccountHolder);
+
+    AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(newAccountHolder);
+    std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber()<< "\n";
 }
 
 void Admin::deleteAccountHolderAccount(Bank& bank ,int accountNumber, Bank::RemovalType type)
@@ -57,16 +66,16 @@ void Admin::viewAccountHolderBalance(const Bank& bank, int accountNumber) const
         AccountHolder* accountHolder = dynamic_cast<AccountHolder*>(user);
         if (accountHolder != nullptr)
         {
-            std::cout << "\nAccount Balance for " << accountHolder->getUserName() << ": RS " << accountHolder->getAccount()->getBalance() << "\n";
+            std::cout << ACCOUNT_BALANCE_MESSAGE << accountHolder->getName() << ": RS " << accountHolder->getAccount()->getBalance() << "\n";
         }
         else
         {
-            std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+            std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
         }
     }
     else
     {
-        std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
     }
 }
 
@@ -78,16 +87,16 @@ void Admin::viewAccountHolderTransactionHistory(const Bank& bank, int accountNum
         AccountHolder* accountHolder = dynamic_cast<AccountHolder*>(user);
         if (accountHolder != nullptr)
         {
-            std::cout << "\nTransaction History for " << accountHolder->getUserName() << ":\n";
+            std::cout << TRANSACTION_HISTORY_MESSAGE << accountHolder->getUserName() << ":\n";
             accountHolder->getAccount()->displayFullStatement();
         }
         else
         {
-            std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+            std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
         }
     }
     else
     {
-        std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
     }
 }

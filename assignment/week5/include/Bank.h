@@ -28,7 +28,7 @@ class Bank
         void removeUser(int accountNumber, RemovalType type);
         void displayAllUsers() const;
         User* findUser(int accountNumber) const;
-        User* findUser(const std::string &email) const;
+        User* findUser(const std::string &userName) const;
 
 };   
 

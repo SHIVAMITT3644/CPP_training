@@ -8,10 +8,8 @@
 
 void displayWelcomeMessage(const Bank &bank)
 {
-    std::cout << "\nWelcome to " << bank.getBankName() << " Simulator!\n";
-    std::cout << "1.Admin\n";
-    std::cout << "2.Account Holder\n";
-    std::cout << "3.Exit\n";
+    std::cout << "Welcome to " << bank.getBankName() << " Simulator!\n";
+    std::cout << MAIN_MENU_BODY;
 }
 
 void deleteAccountByType(Admin *adminUser, Bank &bank, Bank::RemovalType type)
@@ -21,21 +19,17 @@ void deleteAccountByType(Admin *adminUser, Bank &bank, Bank::RemovalType type)
 
     while (deleteTypeChoice != 1 && deleteTypeChoice != 2)
     {
-        std::cout << "----------------------------\n";
-        std::cout << "1.Temperory Delete\n";
-        std::cout << "2.Permanent Delete\n";
-        std::cout << "----------------------------\n";
-
-        deleteTypeChoice = readValidatedIntegerNumber(ENTER_CHOICE_PROMPT);
+        std::cout << DELETE_ACCOUNT_MENU;
+        deleteTypeChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
 
         if (deleteTypeChoice == 1)
         {
-            accountNumber = readValidatedIntegerNumber(ACCOUNT_NUMBER_INPUT_PROMPT);
+            accountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
             adminUser->deleteAccountHolderAccount(bank, accountNumber, Bank::RemovalType::Temporary);
         }
         else if (deleteTypeChoice == 2)
         {
-            accountNumber = readValidatedIntegerNumber(ACCOUNT_NUMBER_INPUT_PROMPT);
+            accountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
             adminUser->deleteAccountHolderAccount(bank, accountNumber, Bank::RemovalType::Permanent);
         }
         else
@@ -64,7 +58,7 @@ void executeAdminAction(Admin *adminUser, Bank &bank, int choice)
     case 4:
     {
         int accountNumberForBalance;
-        accountNumberForBalance = readValidatedIntegerNumber(ACCOUNT_NUMBER_INPUT_PROMPT);
+        accountNumberForBalance = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
         adminUser->viewAccountHolderBalance(bank, accountNumberForBalance);
         break;
     }
@@ -72,12 +66,12 @@ void executeAdminAction(Admin *adminUser, Bank &bank, int choice)
     case 5:
     {
         int accountNumberForTransactionHistory;
-        accountNumberForTransactionHistory = readValidatedIntegerNumber(ACCOUNT_NUMBER_INPUT_PROMPT);
+        accountNumberForTransactionHistory = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
         adminUser->viewAccountHolderTransactionHistory(bank, accountNumberForTransactionHistory);
         break;
     }
     case 6:
-        std::cout << "\nLogging out...\n";
+        std::cout << LOGGING_OUT_MESSAGE;
         break;
 
     default:
@@ -97,7 +91,7 @@ void runAdminSimulator(Bank &bank, User *admin)
         while (adminChoice != 6)
         {
             adminUser->showMenu();
-            adminChoice = readValidatedIntegerNumber(ENTER_CHOICE_PROMPT);
+            adminChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
             executeAdminAction(adminUser, bank, adminChoice);
         }
     }
@@ -115,19 +109,26 @@ void handleDepositOperation(AccountHolder *accountHolderUser)
     }
     else
     {
-        std::cout << DEPOSITE_ERROR_MESSAGE;
+        std::cout << DEPOSITE_TECHNICAL_ERROR_MESSAGE;
     }
 }
 
 void handleWithdrawalOperation(AccountHolder *accountHolderUser)
 {
-    if (accountHolderUser->getAccount()->withdraw())
+    if(accountHolderUser->getAccount()->getBalance() <= 0)
     {
-        std::cout << WITHDRAW_SUCCESS_MESSAGE << accountHolderUser->getAccount()->getBalance() << "\n";
+        std::cout << WITHDRAW_NOT_POSSIBLE_ERROR_MESSAGE;
     }
     else
     {
-        std::cout << WITHDRAW_ERROR_MESSAGE;
+        if (accountHolderUser->getAccount()->withdraw())
+        {
+            std::cout << WITHDRAW_SUCCESS_MESSAGE << accountHolderUser->getAccount()->getBalance() << "\n";
+        }
+        else
+        {
+            std::cout << WITHDRAW_TECHNICAL_ERROR_MESSAGE;
+        }
     }
 }
 
@@ -149,15 +150,19 @@ void executeAccountHolderAction(AccountHolder *accountHolderUser, int choice)
         break;
 
     case 4:
+        std::cout << CURRENT_BALANCE_MESSAGE << accountHolderUser->getAccount() -> getBalance();
+        break;
+        
+    case 5:
         accountHolderUser->getAccount()->displayMiniStatement();
         break;
 
-    case 5:
+    case 6:
         accountHolderUser->getAccount()->displayFullStatement();
         break;
 
-    case 6:
-        std::cout << "\nLogging out...\n";
+    case 7:
+        std::cout << LOGGING_OUT_MESSAGE;
         break;
 
     default:
@@ -174,16 +179,81 @@ void runAccountHolderSimulator(User *accountHolder)
     {
         int accountHolderChoice;
 
-        while (accountHolderChoice != 6)
+        while (accountHolderChoice != 7)
         {
             accountHolderUser->showMenu();
-            accountHolderChoice = readValidatedIntegerNumber(ENTER_CHOICE_PROMPT);
+            accountHolderChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
             executeAccountHolderAction(accountHolderUser, accountHolderChoice);
         }
     }
     else
     {
         std::cout << TECHNICAL_ERROR_MESSAGE;
+    }
+}
+
+void SignUp(Bank& bank)
+{
+    std::string name, userName, password;
+    double initialDeposit;
+
+    readCompleteLineInput(std::cin, name, NAME_INPUT_PROMPT);
+
+    while (true)
+    {
+        userName = User::getValidUserNameInput();
+
+        if (bank.findUser(userName) != nullptr)
+        {
+            std::cout << CREATE_ACCOUT_USER_EXIST_ERROR_MESSAGE;
+        }
+        else
+        {
+            break;
+        }
+    }
+    password = User::getValidPasswordInput();
+    initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+
+    User* newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
+    bank.addUser(newAccountHolder);
+
+    AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(newAccountHolder);
+    std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber()<< "\n";
+}
+
+void handleAccountHolderMenu(Bank &bank)
+{
+    bool stayInAccountHolderMenu = true;
+
+    while (stayInAccountHolderMenu)
+    {
+        std::cout << ACCOUNT_HOLDER_ENTRY_MENU;
+
+        int accountHolderChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
+
+        if (accountHolderChoice == 1)
+        {
+            User *accountHolder = User::login(bank, ACCOUNT_HOLDER);
+
+            if (accountHolder != nullptr)
+            {
+                runAccountHolderSimulator(accountHolder);
+                stayInAccountHolderMenu = false;
+            }
+        }
+        else if (accountHolderChoice == 2)
+        {
+            SignUp(bank);
+        }
+        else if (accountHolderChoice == 3)
+        {
+            stayInAccountHolderMenu = false;
+        }
+        else
+        {
+            std::cout << INVALID_INPUT_ERROR_MESSAGE;
+        }
     }
 }
 
@@ -194,25 +264,20 @@ void runBankSimulator(Bank &bank)
         int bankUserChoice;
         displayWelcomeMessage(bank);
         
-        bankUserChoice = readValidatedIntegerNumber(ENTER_CHOICE_PROMPT);
+        bankUserChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
 
         if (bankUserChoice == 1)
         {
-            User *admin = User::login(bank, "Admin");
+            User *admin = User::login(bank, ADMIN);
 
             if (admin != nullptr)
             {
                 runAdminSimulator(bank, admin);
             }
         }
-
         else if (bankUserChoice == 2)
         {
-            User *accountHolder = User::login(bank, "AccountHolder");
-            if (accountHolder != nullptr)
-            {
-                runAccountHolderSimulator(accountHolder);
-            }
+            handleAccountHolderMenu(bank);
         }
         else if (bankUserChoice == 3)
         {

@@ -11,9 +11,9 @@ Account::Account(int accountNumber, double balance, const std::string &status)
     this->transactionCount = 0;
     this->transactionsCapacity = 0;
 
-    if(balance > 0)
+    if (balance > 0)
     {
-        addTransaction(balance, "Initial Deposit");
+        addTransaction(balance, INITIAL_DEPOSIT);
     }
     else
     {
@@ -44,9 +44,8 @@ void Account::addTransaction(double amount, const std::string &type)
         transactions = newTransactionsArray;
     }
 
+    *(transactions + transactionCount) = new Transaction(transactionCount + 1, amount, type);
     transactionCount++;
-    *(transactions + transactionCount) = new Transaction(transactionCount, amount, type);
-
 }
 
 Account::~Account()
@@ -58,7 +57,6 @@ Account::~Account()
 
     delete[] transactions;
 }
-
 
 int Account::getAccountNumber() const
 {
@@ -85,13 +83,22 @@ bool Account::deposit()
     double amount;
     bool isDepositSuccessful = false;
 
-    amount = readValidatedDecimalNumber(DEPOSITE_AMOUNT_PROMPT);
+    amount = readValidFloatingInput(DEPOSITE_AMOUNT_PROMPT);
 
-    if (amount > 0)
+    while (true)
     {
-        balance += amount;
-        addTransaction(amount, "Deposit   ");
-        isDepositSuccessful = true;
+        if (amount > 0)
+        {
+            balance += amount;
+            addTransaction(amount, DEPOSITE);
+            isDepositSuccessful = true;
+            break;
+        }
+        else
+        {
+            std::cout << DEPOSITE_AMOUNT_ERROR_MESSAGE;
+            amount = readValidFloatingInput(DEPOSITE_AMOUNT_PROMPT);
+        }
     }
 
     return isDepositSuccessful;
@@ -101,62 +108,70 @@ bool Account::withdraw()
 {
     double amount;
     bool isWithdrawalSuccessful = false;
+    amount = readValidFloatingInput(WITHDRAW_AMOUNT_PROMPT);
 
-    amount = readValidatedDecimalNumber(WITHDRAW_AMOUNT_PROMPT);
-
-    if (amount > 0)
+    while (true)
     {
-        if (amount < balance)
+        if (amount > 0)
         {
-            balance -= amount;
-            addTransaction(amount, "Withdrawal");
-
-            isWithdrawalSuccessful = true;
+            if (amount <= balance)
+            {
+                balance -= amount;
+                addTransaction(amount, WITHDRAW);
+                isWithdrawalSuccessful = true;
+                break;
+            }
+            else
+            {
+                std::cout << WITHDRAW_ERROR_MESSAGE;
+                amount = readValidFloatingInput(WITHDRAW_AMOUNT_PROMPT);
+            }
         }
         else
         {
-            std::cout << INSUFFICIENT_BALANCE_ERROR_MESSAGE;
+            std::cout << WITHDRAW_AMOUNT_ERROR_MESSAGE;
+            amount = readValidFloatingInput(WITHDRAW_AMOUNT_PROMPT);
         }
     }
 
-    return isWithdrawalSuccessful;  
+    return isWithdrawalSuccessful;
 }
 
 void Account::showTransactions(int startIndex) const
 {
-    if(transactionCount == 0)
+    if (transactionCount == 0)
     {
-        std::cout << "\nNo transactions has done yet.\n";
+        std::cout << NO_TRANSACTION_ERROR_MESSAGE;
     }
     else
     {
         std::cout << TRANSACTION_STATEMENT_HEADER;
+
         for (int transactionIndex = startIndex; transactionIndex < transactionCount; transactionIndex++)
         {
             (*(transactions + transactionIndex))->displayTransactionDetails();
         }
-    }   
+        std ::cout << CURRENT_BALANCE_MESSAGE << getBalance() << "\n";
+    }
 }
 
 void Account::displayMiniStatement() const
 {
-    std::cout << "\nMini Statement for Account Number: " << accountNumber << "\n";
-    
+    std::cout << MINI_STATEMENT_MESSAGE << accountNumber << "\n";
+
     int startTransactionIndex = transactionCount > 5 ? transactionCount - 5 : 0;
     showTransactions(startTransactionIndex);
 }
 
 void Account::displayFullStatement() const
 {
-    std::cout << "\nFull Statement for Account Number: " << accountNumber << "\n";
+    std::cout << FULL_STATEMENT_MESSAGE << accountNumber << "\n";
     showTransactions(0);
 }
 
-
-
 void Account::displayAccountDetails() const
 {
-    std::cout << "Account Number: " << accountNumber << "\n";
-    std::cout << "Balance: " << balance << "\n";
-    std::cout << "Status: " << status << "\n";
+    std::cout << ACCOUNT_NUMBER << accountNumber << "\n";
+    std::cout << BALANCE << balance << "\n";
+    std::cout << STATUS << status << "\n";
 }

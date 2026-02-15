@@ -42,61 +42,52 @@ void Bank::addUser(User *user)
     *(users + numberOfUsers) = user;
     numberOfUsers++;
 
-    // AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(user);
-
-    // if (accountHolder != nullptr)
-    // {
-    //     std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber() << "\n";
-    // }
-    // else
-    // {
-    //     std::cout << TECHNICAL_ERROR_MESSAGE_FOR_USER_ADD;
-    // }
 }
 
 void Bank::removeUser(int accountNumber, RemovalType type)
 {
-    AccountHolder *accountHolder = nullptr;
+    bool isFound = false;
 
     for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        accountHolder = dynamic_cast<AccountHolder *> (*(users + userIndex));
+        AccountHolder* accountHolder = dynamic_cast<AccountHolder*>(users[userIndex]);
 
         if (accountHolder != nullptr && accountHolder->getAccount()->getAccountNumber() == accountNumber)
         {
+            isFound = true;
+
             if (type == RemovalType::Temporary)
             {
-                if(accountHolder->getAccount()->getStatus() == "Inactive")
+                if (accountHolder->getAccount()->getStatus() == INACTIVE)
                 {
-                    std::cout << "\nAccount is already inactive.\n";
+                    std::cout << ACCOUNT_ALREADY_DEACTIVATE_MESSAGE;
                 }
                 else
                 {
-                    accountHolder->getAccount()->changeStatus("Inactive");
-                    std::cout << "\nAccount temporarily deactivated.\n";
+                    accountHolder->getAccount()->changeStatus(INACTIVE);
+                    std::cout << ACCOUNT_DEACTIVATE_MESSAGE;
                 }
             }
             else
             {
-                delete *(users + userIndex);  
+                delete users[userIndex];
+
                 for (int shiftIndex = userIndex; shiftIndex < numberOfUsers - 1; shiftIndex++)
                 {
-                    *(users + shiftIndex) = *(users + shiftIndex + 1);
+                    users[shiftIndex] = users[shiftIndex + 1];
                 }
 
                 numberOfUsers--;
-                std::cout << "\nAccount permanently removed.\n";   
+                std::cout << ACCOUNT_DELETE_MESSAGE;
             }
-        }
-        else
-        {
-            accountHolder = nullptr;
+
+            break;
         }
     }
 
-    if (accountHolder == nullptr)
+    if (!isFound)
     {
-        std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
     }
 }
 
@@ -117,13 +108,13 @@ User *Bank::findUser(int accountNumber) const
     return user;
 }
 
-User* Bank::findUser(const std::string &email) const
+User* Bank::findUser(const std::string &userName) const
 {
     User *user = nullptr;
 
     for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        if ((*(users + userIndex))->getUserEmail() == email)
+        if ((*(users + userIndex))->getUserName() == userName)
         {
             user = *(users + userIndex);
         }
@@ -144,14 +135,15 @@ void Bank::displayAllUsers() const
         {
             accountHolderCount++;
 
-            std::cout << "\nAccount Holder " << accountHolderCount << ":\n";
+            std::cout << ACCOUNT_HOLDER << " : " <<accountHolderCount << "\n";
             accountHolder->displayUserDetails();
+            std::cout << "-----------------------------------";
         }
     }
 
     if (accountHolderCount == 0)
     {
-        std::cout << "\nNo account holders found.\n";
+        std::cout << ACCOUNTHOLDER_NOT_FOUND_MESSAGE;
     }
 }
 

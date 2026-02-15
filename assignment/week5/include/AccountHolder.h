@@ -7,7 +7,7 @@ class AccountHolder : public User
 {
     Account* account;
 public:
-    AccountHolder(const std::string &name, const std::string &email, const std::string &password, int intialBalance);
+    AccountHolder(const std::string &name, const std::string &userName, const std::string &password, int intialBalance);
     ~AccountHolder();
     Account* getAccount() const;
     

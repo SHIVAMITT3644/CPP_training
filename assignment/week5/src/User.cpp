@@ -4,14 +4,14 @@
 #include "Bank.h"
 #include "AccountHolder.h"
 
+std::string User::getName() const
+{
+    return name;
+}
+
 std::string User::getUserName() const
 {
     return userName;
-}
-
-std::string User::getUserEmail() const
-{
-    return email;
 }
 
 std::string User::getPassword() const
@@ -19,14 +19,14 @@ std::string User::getPassword() const
     return password;
 }
 
+void User::setName(const std::string &name)
+{
+    this->name = name;
+}
+
 void User::setUserName(const std::string &userName)
 {
     this->userName = userName;
-}
-
-void User::setEmail(const std::string &email)
-{
-    this->email = email;
 }
 
 void User::setPassword(const std::string &password)
@@ -34,28 +34,71 @@ void User::setPassword(const std::string &password)
     this->password = password;
 }
 
-User* User::accountHolderLogin(const Bank& bank)
+
+std::string User::getValidUserNameInput() 
+{
+    std::string userName;
+
+    while (true)
+    {
+        readCompleteLineInput(std::cin, userName, USERNAME_INPUT_PROMPT);
+
+        if (userName.length() <= 4)
+        {
+            std::cout << USERNAME_INPUT_ERROR_MESSAGE;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return userName;
+}
+
+std::string User::getValidPasswordInput() 
+{
+    std::string password;
+
+    while (true)
+    {
+        password = readHiddenPassword(PASSWORD_INPUT_PROMPT);
+
+        if (password.length() <= 4)
+        {
+            std::cout << PASSWORD_INPUT_ERROR_MESSAGE;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return password;
+}
+
+User *User::accountHolderLogin(const Bank &bank)
 {
     int inputAccountNumber;
-    std::string inputPassword;
+    std::string password;
 
-    inputAccountNumber = readValidatedIntegerNumber(ACCOUNT_NUMBER_INPUT_PROMPT);
-    readCompleteLineInput(std::cin, inputPassword, PASSWORD_INPUT_PROMPT);
-
-    User* user = bank.findUser(inputAccountNumber);
-    AccountHolder* accountHolder = nullptr;
+    inputAccountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
+    password = getValidPasswordInput();
+    
+    User *user = bank.findUser(inputAccountNumber);
+    AccountHolder *accountHolder = nullptr;
 
     if (user != nullptr)
     {
-        accountHolder = dynamic_cast<AccountHolder*>(user);
+        accountHolder = dynamic_cast<AccountHolder *>(user);
 
-        if (accountHolder != nullptr && user->getPassword() == inputPassword)
+        if (accountHolder != nullptr && user->getPassword() == password)
         {
-            if(accountHolder->getAccount()->getStatus() != "Active")
+            if (accountHolder->getAccount()->getStatus() != ACTIVE)
             {
-                std::cout << "\nYour account is currently " << accountHolder->getAccount()->getStatus() << CONTACT_BANK_ERROR_MESSAGE;
+                std::cout << CURRENT_ACCOUNT_STATUS_MESSAGE << accountHolder->getAccount()->getStatus() << CONTACT_BANK_ERROR_MESSAGE;
                 accountHolder = nullptr;
-            }      
+            }
         }
         else
         {
@@ -65,25 +108,23 @@ User* User::accountHolderLogin(const Bank& bank)
     }
     else
     {
-        std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
         accountHolder = nullptr;
     }
 
-    return accountHolder; 
+    return accountHolder;
 }
 
-User* User::adminLogin(const Bank& bank)
+User *User::adminLogin(const Bank &bank)
 {
-    std::string email,inputPassword;
+    std::string password;
 
-    readCompleteLineInput(std::cin, email, EMAIL_INPUT_PROMPT);
-    readCompleteLineInput(std::cin, inputPassword, PASSWORD_INPUT_PROMPT);
+    User *user = bank.findUser(getValidUserNameInput());
+    password = getValidPasswordInput();
 
-    User* user = bank.findUser(email);    
-
-    if(user != nullptr)
+    if (user != nullptr)
     {
-        if(user->getPassword() != inputPassword)
+        if (user->getPassword() != password)
         {
             user = nullptr;
             std::cout << INVALID_PASSWORD_ERROR_MESSAGE;
@@ -97,11 +138,11 @@ User* User::adminLogin(const Bank& bank)
     return user;
 }
 
-User* User::login(const Bank& bank, std::string userType)
+User *User::login(const Bank &bank, std::string userType)
 {
-    User* user = nullptr;
+    User *user = nullptr;
 
-    if(userType == "AccountHolder")
+    if (userType == ACCOUNT_HOLDER)
     {
         user = accountHolderLogin(bank);
     }
