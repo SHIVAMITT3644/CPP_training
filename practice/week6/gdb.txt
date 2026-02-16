@@ -1,0 +1,63 @@
+Temporary breakpoint 1 at 0x1211: file LoopingProgram.cpp, line 22.
+Starting program: /home/shivam/Desktop/CPP_training/practice/week6/LoopingProgram 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Temporary breakpoint 1, main () at LoopingProgram.cpp:22
+22	    int n = 10;
+23	    int result = computeSum(n);
+computeSum (n=10) at LoopingProgram.cpp:5
+5	    int sum = 0;
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+13	            sum += 100;   // <-- Intentional logic bug
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+9	        sum += i;
+11	        if (i == 5)
+7	    for (int i = 1; i <= n; i++)
+17	    return sum;
+18	}
+main () at LoopingProgram.cpp:25
+25	    int counter = 0;
+27	    while (counter < 3)
+29	        std::cout << "Counter: " << counter << std::endl;
+30	        counter++;
+27	    while (counter < 3)
+29	        std::cout << "Counter: " << counter << std::endl;
+30	        counter++;
+27	    while (counter < 3)
+29	        std::cout << "Counter: " << counter << std::endl;
+30	        counter++;
+27	    while (counter < 3)
+33	    std::cout << "Final Sum: " << result << std::endl;
+35	    return 0;
+36	}
+__libc_start_call_main (main=main@entry=0x555555555205 <main()>, argc=argc@entry=1, argv=argv@entry=0x7fffffffdd08) at ../sysdeps/nptl/libc_start_call_main.h:74
+74	../sysdeps/nptl/libc_start_call_main.h: No such file or directory.
+Undefined catch command: "gdb.txt".  Try "help catch".
+[Inferior 1 (process 104666) exited normally]
