@@ -38,8 +38,20 @@ void Admin::createAccountHolderAccount(Bank& bank)
             break;
         }
     }
+
     password = User::getValidPasswordInput();
-    initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+    
+    while(true)
+    {
+        initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+        if(initialDeposit < 0)
+        {
+            std::cout << INITIAL_DEPOSITE_AMOUNT_ERROR_MESSAGE;
+        }
+        else{
+            break;
+        }
+    }
 
     User* newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
     bank.addUser(newAccountHolder);
@@ -61,6 +73,7 @@ void Admin::viewAllAccountHolders(const Bank& bank) const
 void Admin::viewAccountHolderBalance(const Bank& bank, int accountNumber) const
 {
     User* user = bank.findUser(accountNumber);
+
     if (user != nullptr)
     {
         AccountHolder* accountHolder = dynamic_cast<AccountHolder*>(user);
@@ -70,7 +83,7 @@ void Admin::viewAccountHolderBalance(const Bank& bank, int accountNumber) const
         }
         else
         {
-            std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
+            std::cout << TECHNICAL_ERROR_MESSAGE;
         }
     }
     else
@@ -92,7 +105,7 @@ void Admin::viewAccountHolderTransactionHistory(const Bank& bank, int accountNum
         }
         else
         {
-            std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
+            std::cout << TECHNICAL_ERROR_MESSAGE;
         }
     }
     else

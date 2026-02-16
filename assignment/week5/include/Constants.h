@@ -71,6 +71,7 @@ constexpr const char* TRANSACTION_STATEMENT_HEADER = "\n------------------------
 constexpr const char* DEPOSITE_AMOUNT_PROMPT = "Enter Amount to Deposit : ";
 constexpr const char* DEPOSITE_SUCCESS_MESSAGE = "\nDeposit successful. Updated balance: ";
 constexpr const char* DEPOSITE_AMOUNT_ERROR_MESSAGE = "\nError: Deposit amount must be greater than zero.\n";
+constexpr const char* INITIAL_DEPOSITE_AMOUNT_ERROR_MESSAGE = "\nError: Initial Deposit amount must be greater or equal to zero.\n";
 constexpr const char* DEPOSITE_TECHNICAL_ERROR_MESSAGE = "\nERROR: Deposite Unsuccessful!Please try again later";
 
 constexpr const char* WITHDRAW_AMOUNT_PROMPT = "Enter Amount to Withdraw : ";

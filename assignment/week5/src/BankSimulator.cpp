@@ -213,7 +213,19 @@ void SignUp(Bank& bank)
         }
     }
     password = User::getValidPasswordInput();
-    initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+    
+    while(true)
+    {
+        initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
+
+        if(initialDeposit < 0)
+        {
+            std::cout << INITIAL_DEPOSITE_AMOUNT_ERROR_MESSAGE;
+        }
+        else{
+            break;
+        }
+    }
 
     User* newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
     bank.addUser(newAccountHolder);
@@ -222,7 +234,7 @@ void SignUp(Bank& bank)
     std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber()<< "\n";
 }
 
-void handleAccountHolderMenu(Bank &bank)
+void handleAccountHolderLoginSignup(Bank &bank)
 {
     bool stayInAccountHolderMenu = true;
 
@@ -277,7 +289,7 @@ void runBankSimulator(Bank &bank)
         }
         else if (bankUserChoice == 2)
         {
-            handleAccountHolderMenu(bank);
+            handleAccountHolderLoginSignup(bank);
         }
         else if (bankUserChoice == 3)
         {
