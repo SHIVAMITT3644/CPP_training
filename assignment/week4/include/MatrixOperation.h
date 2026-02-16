@@ -9,4 +9,4 @@ class MatrixOperation
     Matrix productOfMatrix(const Matrix &matrix1, const Matrix &matrix2);
 };
 
-#endif
+#endif //MATRIX_OPERATION_H

@@ -6,4 +6,4 @@ int readValidatedIntegerNumber(const std::string& inputMessage);
 double readValidatedDecimalNumber(const std::string& inputMessage);
 int readContinueProgramChoice();
 
-#endif
+#endif //INPUT_H

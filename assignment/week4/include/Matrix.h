@@ -14,7 +14,7 @@ class Matrix
     void displayMatrix(const std::string &message);
     Matrix operator+(const Matrix& secondMatrix) const;
     Matrix operator*(const Matrix& secondMatrix) const;
-    void operator =(const Matrix &secondMatrix) const;
+    Matrix& operator=(const Matrix& secondMatrix);
 
     int getRowLength() const;
     int getColumnLength() const;    
@@ -23,4 +23,4 @@ class Matrix
     ~Matrix();    
 };
 
-#endif
+#endif //MATRIX_H

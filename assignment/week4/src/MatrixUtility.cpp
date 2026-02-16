@@ -6,153 +6,134 @@
 
 void MatrixUtility::displayMatrixOperationMenu()
 {
-    std::cout << GREETING_MESSAGE;
-    std::cout << LIST_MATRIX_OPERATION;
+    displayMessage(GREETING_MESSAGE);
+    displayMessage(LIST_MATRIX_OPERATION);
+}
+
+void MatrixUtility::displayMessage(const std::string& message) const
+{
+    std::cout << message;
 }
 
 char MatrixUtility::readMatrixOperationChoice()
 {
-    int matrixOperationChoice = 0;
-    char matrixOperationChoiceChar;
-
     while (true)
     {
-        matrixOperationChoice = readValidatedIntegerNumber(MATRIX_OPERATION_CHOICE_MESSAGE);
+        int matrixOperationChoice =
+            readValidatedIntegerNumber(MATRIX_OPERATION_CHOICE_MESSAGE);
 
-        if (matrixOperationChoice == 1) 
-        {
-            matrixOperationChoiceChar = '+';
-            break;
-        }
+        if (matrixOperationChoice == 1)
+            return '+';
         else if (matrixOperationChoice == 2)
-        {
-            matrixOperationChoiceChar = '*';
-            break;
-        }
-        else
-        {
-            std::cout << INVALID_MATRIX_OPERATION_CHOICE_ERROR_MESSAGE;
-            continue;
-        }
-    }
+            return '*';
 
-    return matrixOperationChoiceChar;
+        std::cout << INVALID_MATRIX_OPERATION_CHOICE_ERROR_MESSAGE;
+    }
 }
 
 int MatrixUtility::readValidMatrixDimensionLength(const std::string &message)
 {
-    int dimensionValue = 0;
-
     while (true)
     {
-        dimensionValue = readValidatedIntegerNumber(message);
+        int dimensionValue = readValidatedIntegerNumber(message);
 
         if (dimensionValue > 0)
-        {
-            break;
-        }
-        else
-        {
-            std::cout << INVALID_MATRIX_DIMENSION_ERROR_MESSAGE;
-        }
-    }
+            return dimensionValue;
 
-    return dimensionValue;
+        std::cout << INVALID_MATRIX_DIMENSION_ERROR_MESSAGE;
+    }
 }
-
-
-
-bool MatrixUtility::isMatrixAdditionPossible()
-{
-    bool isAdittionPossible = true;
-
-    if (firstMatrixRowLength != secondMatrixRowLength || firstMatrixColumnLength != secondMatrixColumnLength)
-    {
-        std::cout << ADDITION_NOT_POSSIBLE_ERROR_MESSAGE;
-        isAdittionPossible = false;
-    }
-
-    return isAdittionPossible;
-}
-
-bool MatrixUtility::isMatrixMultiplicationPossible()
-{
-    bool isMultiplicationPossible = true;
-
-    if (firstMatrixColumnLength != secondMatrixRowLength)
-    {
-        std::cout << MULTIPLICATION_NOT_POSSIBLE_ERROR_MESSAGE;
-        isMultiplicationPossible = false;
-    }
-
-    return isMultiplicationPossible;
-}
-
- bool MatrixUtility::isMatrixCalculationPossible(char matrixOperationChoice)
- {
-    bool isCalculationPossible = false;
-
-    switch (matrixOperationChoice)
-    {
-    case '+':
-        isCalculationPossible = isMatrixAdditionPossible();
-        break;
-
-    case '*':
-        isCalculationPossible = isMatrixMultiplicationPossible();
-        break;
-    
-    default:
-        std::cout << INVALID_MATRIX_OPERATION_CHOICE_ERROR_MESSAGE;
-        break;
-    }
-
-    return isCalculationPossible;
- }
-
 
 void MatrixUtility::initializeFirstMatrixDimension()
 {
-    firstMatrixRowLength = readValidMatrixDimensionLength(FIRST_MATRIX_ROW_INPUT_MESSAGE);
-    firstMatrixColumnLength = readValidMatrixDimensionLength(FIRST_MATRIX_COLUMN_INPUT_MESSAGE);
+    firstMatrix.rowLength =
+        readValidMatrixDimensionLength(FIRST_MATRIX_ROW_INPUT_MESSAGE);
+
+    firstMatrix.columnLength =
+        readValidMatrixDimensionLength(FIRST_MATRIX_COLUMN_INPUT_MESSAGE);
 }
 
 void MatrixUtility::initializeSecondMatrixDimension()
 {
-    secondMatrixRowLength = readValidMatrixDimensionLength(SECOND_MATRIX_ROW_INPUT_MESSAGE);
-    secondMatrixColumnLength = readValidMatrixDimensionLength(SECOND_MATRIX_COLUMN_INPUT_MESSAGE);
+    secondMatrix.rowLength =
+        readValidMatrixDimensionLength(SECOND_MATRIX_ROW_INPUT_MESSAGE);
+
+    secondMatrix.columnLength =
+        readValidMatrixDimensionLength(SECOND_MATRIX_COLUMN_INPUT_MESSAGE);
 }
 
-int MatrixUtility::getFirstMatrixRowLength()
+int MatrixUtility::getFirstMatrixRowLength() const
 {
-    return firstMatrixRowLength;
+    return firstMatrix.rowLength;
 }
 
-int MatrixUtility::getFirstMatrixColumnLength()
+int MatrixUtility::getFirstMatrixColumnLength() const
 {
-    return firstMatrixColumnLength;
+    return firstMatrix.columnLength;
 }
 
-int MatrixUtility::getSecondMatrixRowLength()
+int MatrixUtility::getSecondMatrixRowLength() const
 {
-    return secondMatrixRowLength;
-}       
-
-int MatrixUtility::getSecondMatrixColumnLength()
-{
-    return secondMatrixColumnLength;
+    return secondMatrix.rowLength;
 }
 
-void MatrixUtility::createMatrix(Matrix &matrix , const std::string& message)
+int MatrixUtility::getSecondMatrixColumnLength() const
 {
-    std::cout << message;
+    return secondMatrix.columnLength;
+}
+
+bool MatrixUtility::isMatrixAdditionPossible() const
+{
+    if (firstMatrix.rowLength != secondMatrix.rowLength ||
+        firstMatrix.columnLength != secondMatrix.columnLength)
+    {
+        std::cout << ADDITION_NOT_POSSIBLE_ERROR_MESSAGE;
+        return false;
+    }
+
+    return true;
+}
+
+bool MatrixUtility::isMatrixMultiplicationPossible() const
+{
+    if (firstMatrix.columnLength != secondMatrix.rowLength)
+    {
+        std::cout << MULTIPLICATION_NOT_POSSIBLE_ERROR_MESSAGE;
+        return false;
+    }
+
+    return true;
+}
+
+bool MatrixUtility::isMatrixCalculationPossible(char matrixOperationChoice) const
+{
+    switch (matrixOperationChoice)
+    {
+        case '+':
+            return isMatrixAdditionPossible();
+
+        case '*':
+            return isMatrixMultiplicationPossible();
+
+        default:
+            std::cout << INVALID_MATRIX_OPERATION_CHOICE_ERROR_MESSAGE;
+            return false;
+    }
+}
+
+void MatrixUtility::createMatrix(Matrix &matrix, const std::string& message)
+{
+    displayMessage(message);
 
     for (int rowIndex = 0; rowIndex < matrix.getRowLength(); rowIndex++)
     {
         for (int columnIndex = 0; columnIndex < matrix.getColumnLength(); columnIndex++)
         {
-            
-            *(*(matrix.getMatrixPointer() + rowIndex) + columnIndex) = readValidatedDecimalNumber("Enter value for Position Matrix[" + std::to_string(rowIndex) + "][" + std::to_string(columnIndex) + "] : ");
+            *(*(matrix.getMatrixPointer() + rowIndex) + columnIndex) =
+                readValidatedDecimalNumber(
+                    "Enter value for Position Matrix[" +
+                    std::to_string(rowIndex) + "][" +
+                    std::to_string(columnIndex) + "] : ");
         }
     }
 }

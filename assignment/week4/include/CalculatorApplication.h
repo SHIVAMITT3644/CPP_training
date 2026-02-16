@@ -1,6 +1,6 @@
 #ifndef CALCULATOR_APP_H
 #define CALCULATOR_APP_H
 
-void runMatrixCalculator();
+bool runMatrixCalculator();
 
-#endif
+#endif //CALCULATOR_APP_H

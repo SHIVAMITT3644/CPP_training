@@ -2,6 +2,10 @@
 
 int main()
 {
-    runMatrixCalculator();
+    if (!runMatrixCalculator())
+    {
+        return 1;
+    }
+
     return 0;
 }

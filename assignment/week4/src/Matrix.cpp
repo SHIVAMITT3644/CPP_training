@@ -81,8 +81,16 @@ Matrix Matrix::operator *(const Matrix &secondMatrix) const
     return multiplicationMatrix;
 }
 
-void Matrix::operator =(const Matrix &secondMatrix) const
+Matrix& Matrix::operator=(const Matrix &secondMatrix)
 {
+    if (this == &secondMatrix)
+    {
+        return *this;
+    }
+    
+    rowLength = secondMatrix.rowLength;
+    columnLength = secondMatrix.columnLength;
+
     for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
     {
         for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
@@ -91,6 +99,8 @@ void Matrix::operator =(const Matrix &secondMatrix) const
                 *(*(secondMatrix.matrix + rowIndex) + columnIndex);
         }
     }
+
+    return *this;
 }
 
 Matrix::~Matrix()

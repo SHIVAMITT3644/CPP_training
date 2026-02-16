@@ -39,7 +39,7 @@ void performMatrixOperation(char matrixOperationChoice, const Matrix& firstMatri
     }
 }
 
-void runMatrixCalculator()
+bool runMatrixCalculator()
 {
     int userInputChoice;
     char matrixOperationChoice;
@@ -60,10 +60,17 @@ void runMatrixCalculator()
             continue;
         }
 
-        Matrix firstMatrix(matrixUtility.getFirstMatrixRowLength(), matrixUtility.getFirstMatrixColumnLength());
-        Matrix secondMatrix(matrixUtility.getSecondMatrixRowLength(), matrixUtility.getSecondMatrixColumnLength());
-        initializeMatrices(matrixUtility, firstMatrix, secondMatrix);
+        Matrix firstMatrix(
+            matrixUtility.getFirstMatrixRowLength(),
+            matrixUtility.getFirstMatrixColumnLength()
+        );
 
+        Matrix secondMatrix(
+            matrixUtility.getSecondMatrixRowLength(),
+            matrixUtility.getSecondMatrixColumnLength()
+        );
+
+        initializeMatrices(matrixUtility, firstMatrix, secondMatrix);
         performMatrixOperation(matrixOperationChoice, firstMatrix, secondMatrix);
 
         userInputChoice = readContinueProgramChoice();
@@ -71,4 +78,6 @@ void runMatrixCalculator()
     } while (userInputChoice != 0);
 
     std::cout << EXIT_PROGRAM_MESSAGE;
+
+    return true;
 }
