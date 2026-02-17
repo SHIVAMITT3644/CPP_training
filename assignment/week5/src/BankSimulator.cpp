@@ -12,7 +12,7 @@ void displayWelcomeMessage(const Bank &bank)
     std::cout << MAIN_MENU_BODY;
 }
 
-void deleteAccountByType(Admin *adminUser, Bank &bank, Bank::RemovalType type)
+void deleteAccountByType(Admin *adminUser, Bank &bank)
 {
     int accountNumber;
     int deleteTypeChoice;
@@ -48,7 +48,7 @@ void executeAdminAction(Admin *adminUser, Bank &bank, int choice)
         break;
 
     case 2:
-        deleteAccountByType(adminUser, bank, Bank::RemovalType::Temporary);
+        deleteAccountByType(adminUser, bank);
         break;
 
     case 3:
@@ -56,20 +56,15 @@ void executeAdminAction(Admin *adminUser, Bank &bank, int choice)
         break;
 
     case 4:
-    {
-        int accountNumberForBalance;
-        accountNumberForBalance = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
-        adminUser->viewAccountHolderBalance(bank, accountNumberForBalance);
+
+        adminUser->viewAccountHolderBalance(bank);
         break;
-    }
 
     case 5:
-    {
-        int accountNumberForTransactionHistory;
-        accountNumberForTransactionHistory = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
-        adminUser->viewAccountHolderTransactionHistory(bank, accountNumberForTransactionHistory);
+
+        adminUser->viewAccountHolderTransactionHistory(bank);
         break;
-    }
+
     case 6:
         std::cout << LOGGING_OUT_MESSAGE;
         break;
@@ -115,7 +110,7 @@ void handleDepositOperation(AccountHolder *accountHolderUser)
 
 void handleWithdrawalOperation(AccountHolder *accountHolderUser)
 {
-    if(accountHolderUser->getAccount()->getBalance() <= 0)
+    if (accountHolderUser->getAccount()->getBalance() <= 0)
     {
         std::cout << WITHDRAW_NOT_POSSIBLE_ERROR_MESSAGE;
     }
@@ -150,9 +145,9 @@ void executeAccountHolderAction(AccountHolder *accountHolderUser, int choice)
         break;
 
     case 4:
-        std::cout << CURRENT_BALANCE_MESSAGE << accountHolderUser->getAccount() -> getBalance();
+        std::cout << CURRENT_BALANCE_MESSAGE << accountHolderUser->getAccount()->getBalance();
         break;
-        
+
     case 5:
         accountHolderUser->getAccount()->displayMiniStatement();
         break;
@@ -192,7 +187,7 @@ void runAccountHolderSimulator(User *accountHolder)
     }
 }
 
-void SignUp(Bank& bank)
+void SignUp(Bank &bank)
 {
     std::string name, userName, password;
     double initialDeposit;
@@ -213,25 +208,26 @@ void SignUp(Bank& bank)
         }
     }
     password = User::getValidPasswordInput();
-    
-    while(true)
+
+    while (true)
     {
         initialDeposit = readValidFloatingInput(INITIAL_DEPOSIT_INPUT_PROMPT);
 
-        if(initialDeposit < 0)
+        if (initialDeposit < 0)
         {
             std::cout << INITIAL_DEPOSITE_AMOUNT_ERROR_MESSAGE;
         }
-        else{
+        else
+        {
             break;
         }
     }
 
-    User* newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
+    User *newAccountHolder = new AccountHolder(name, userName, password, initialDeposit);
     bank.addUser(newAccountHolder);
 
     AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(newAccountHolder);
-    std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber()<< "\n";
+    std::cout << ACCOUNT_CREATED_MESSAGE << accountHolder->getAccount()->getAccountNumber() << "\n";
 }
 
 void handleAccountHolderLoginSignup(Bank &bank)
@@ -275,7 +271,7 @@ void runBankSimulator(Bank &bank)
     {
         int bankUserChoice;
         displayWelcomeMessage(bank);
-        
+
         bankUserChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
 
         if (bankUserChoice == 1)

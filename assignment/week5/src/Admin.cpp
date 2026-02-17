@@ -70,8 +70,10 @@ void Admin::viewAllAccountHolders(const Bank& bank) const
     bank.displayAllUsers();
 }
 
-void Admin::viewAccountHolderBalance(const Bank& bank, int accountNumber) const
+void Admin::viewAccountHolderBalance(const Bank& bank) const
 {
+    int accountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
+
     User* user = bank.findUser(accountNumber);
 
     if (user != nullptr)
@@ -92,8 +94,10 @@ void Admin::viewAccountHolderBalance(const Bank& bank, int accountNumber) const
     }
 }
 
-void Admin::viewAccountHolderTransactionHistory(const Bank& bank, int accountNumber) const
+void Admin::viewAccountHolderTransactionHistory(const Bank& bank) const
 {
+    int accountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
+
     User* user = bank.findUser(accountNumber);
     if (user != nullptr)
     {
