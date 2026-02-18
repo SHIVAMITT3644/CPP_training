@@ -86,7 +86,7 @@ constexpr const char* ACCOUNT_NUMBER_INPUT_PROMPT = "Enter Account Number: ";
 constexpr const char* PASSWORD_INPUT_PROMPT = "Enter Password: ";
 constexpr const char* NAME_INPUT_PROMPT = "Please enter name: ";
 constexpr const char* USERNAME_INPUT_PROMPT = "Please enter your Username: ";
-constexpr const char* INITIAL_DEPOSIT_INPUT_PROMPT = "Please enter initial deposit amount: ";
+constexpr const char* INITIAL_DEPOSIT_INPUT_PROMPT = "Please enter initial deposit amount(can be zero): ";
 
 constexpr const char* CURRENT_BALANCE_MESSAGE = "\nCurrent Balance: ";
 
@@ -94,6 +94,8 @@ constexpr const char* ACCOUNT_DELETE_MESSAGE = "\nThe account has been permanent
 constexpr const char*  ACCOUNT_DEACTIVATE_MESSAGE = "\nThe account has been temporarily deactivated successfully.\n";
 constexpr const char* ACCOUNT_ALREADY_DEACTIVATE_MESSAGE = "\nAccount is already inactive.\n";
 constexpr const char* CURRENT_ACCOUNT_STATUS_MESSAGE = "\nYour account is currently ";
+
+constexpr const char* ACCOUNT_NOT_REMOVED_ERROR_MESSAGE = "\nAccount not Removed\n";
 
 constexpr const char* MINI_STATEMENT_MESSAGE = "\nMini Statement for Account Number: ";
 constexpr const char* FULL_STATEMENT_MESSAGE = "\nFull Statement for Account Number: ";

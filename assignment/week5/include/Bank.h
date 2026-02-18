@@ -6,10 +6,13 @@ class User;
     
 class Bank                               
 {  
-    std::string bankName;
-    int numberOfUsers;
-    int capacityOfUsers;
-    User** users;
+        std::string bankName;
+        int numberOfUsers;
+        int capacityOfUsers;
+        User** users;   
+
+    User* loginAccountHolder() const;
+    User* loginAdmin() const;
 
     public:  
 
@@ -24,12 +27,12 @@ class Bank
         ~Bank();
 
         std::string getBankName() const;        
-        void addUser(User* user);
-        void removeUser(int accountNumber, RemovalType type);
+        bool addUser(User *user);
+        bool removeUser(int accountNumber, RemovalType type);
         void displayAllUsers() const;
         User* findUser(int accountNumber) const;
         User* findUser(const std::string &userName) const;
-
+        User* login(const std::string& role) const;
 };   
 
 #endif

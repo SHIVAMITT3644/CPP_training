@@ -2,7 +2,6 @@
 #define ADMIN_H
 
 #include "User.h"
-#include "Bank.h"
 
 class Admin : public User
 {
@@ -10,11 +9,8 @@ class Admin : public User
     void showMenu() const override;
     
     Admin(const std::string &name, const std::string &userName, const std::string &password);
-    void createAccountHolderAccount(Bank& bank);
-    void deleteAccountHolderAccount(Bank& bank ,int accountNumber, Bank::RemovalType type);
-    void viewAllAccountHolders(const Bank& bank) const;
-    void viewAccountHolderBalance(const Bank& bank) const;
-    void viewAccountHolderTransactionHistory(const Bank& bank) const;
+    void viewAccountHolderBalance(User* user) const;
+    void viewAccountHolderTransactionHistory(User* user) const;
 };
 
 #endif

@@ -13,7 +13,7 @@ class Account
     int transactionCount;
     int transactionsCapacity;
     void addTransaction(double amount, const std::string &type);
-    void showTransactions(int startIndex) const;
+    void displayTransactions(int startIndex) const;
 
 public:
     Account(int accountNumber, double balance , const std::string &status = "Active");

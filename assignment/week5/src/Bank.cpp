@@ -1,6 +1,7 @@
-#include "Bank.h"
 #include <iostream>
+#include "Bank.h"
 #include "Constants.h"
+#include "Input.h"
 #include "AccountHolder.h"
 
 int Bank::accountNumberGenerator = 1;
@@ -18,39 +19,53 @@ std::string Bank::getBankName() const
     return bankName;
 }
 
-void Bank::addUser(User *user)
+bool Bank::addUser(User *user)
 {
-    if (numberOfUsers == 0)
-    {
-        capacityOfUsers = 1;
-        users = new User *[capacityOfUsers];
-    }
-    else if (numberOfUsers == capacityOfUsers)
-    {
-        capacityOfUsers *= 2;
-        User **newUsersArray = new User *[capacityOfUsers];
+    bool isAdded;
 
-        for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
+    if (findUser(user->getUserName()) != nullptr)
+    {
+        isAdded = false;
+    }
+    else
+    {
+        if (numberOfUsers == 0)
         {
-            *(newUsersArray + userIndex) = *(users + userIndex);
+            capacityOfUsers = 1;
+            users = new User *[capacityOfUsers];
+        }
+        else if (numberOfUsers == capacityOfUsers)
+        {
+            capacityOfUsers *= 2;
+
+            User **newUsersArray = new User *[capacityOfUsers];
+
+            for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
+            {
+                *(newUsersArray + userIndex) = *(users + userIndex);
+            }
+
+            delete[] users;
+            users = newUsersArray;
         }
 
-        delete[] users;
-        users = newUsersArray;
+        *(users + numberOfUsers) = user;
+        numberOfUsers++;
+
+        isAdded = true;
     }
 
-    *(users + numberOfUsers) = user;
-    numberOfUsers++;
-
+    return isAdded;
 }
 
-void Bank::removeUser(int accountNumber, RemovalType type)
+bool Bank::removeUser(int accountNumber, RemovalType type)
 {
     bool isFound = false;
+    bool isRemoved = false;
 
     for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        AccountHolder* accountHolder = dynamic_cast<AccountHolder*>(users[userIndex]);
+        AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(*(users + userIndex));
 
         if (accountHolder != nullptr && accountHolder->getAccount()->getAccountNumber() == accountNumber)
         {
@@ -65,30 +80,34 @@ void Bank::removeUser(int accountNumber, RemovalType type)
                 else
                 {
                     accountHolder->getAccount()->changeStatus(INACTIVE);
+                    isRemoved = true;
                     std::cout << ACCOUNT_DEACTIVATE_MESSAGE;
                 }
             }
             else
             {
-                delete users[userIndex];
+                delete *(users + userIndex);
 
                 for (int shiftIndex = userIndex; shiftIndex < numberOfUsers - 1; shiftIndex++)
                 {
-                    users[shiftIndex] = users[shiftIndex + 1];
+                    *(users + shiftIndex) = *(users + shiftIndex + 1);
                 }
 
                 numberOfUsers--;
                 std::cout << ACCOUNT_DELETE_MESSAGE;
+                isRemoved = true;
             }
 
             break;
         }
     }
 
-    if (!isFound)
+    if (isFound == false)
     {
         std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
     }
+
+    return isRemoved;
 }
 
 User *Bank::findUser(int accountNumber) const
@@ -108,7 +127,7 @@ User *Bank::findUser(int accountNumber) const
     return user;
 }
 
-User* Bank::findUser(const std::string &userName) const
+User *Bank::findUser(const std::string &userName) const
 {
     User *user = nullptr;
 
@@ -135,9 +154,9 @@ void Bank::displayAllUsers() const
         {
             accountHolderCount++;
 
-            std::cout << ACCOUNT_HOLDER << " : " <<accountHolderCount << "\n";
+            std::cout << ACCOUNT_HOLDER << " : " << accountHolderCount << "\n";
             accountHolder->displayUserDetails();
-            std::cout << "-----------------------------------";
+            std::cout << "-----------------------------------\n";
         }
     }
 
@@ -155,4 +174,78 @@ Bank::~Bank()
     }
 
     delete[] users;
+}
+
+User* Bank::loginAccountHolder() const
+{
+    int inputAccountNumber = readValidUserInput(ACCOUNT_NUMBER_INPUT_PROMPT);
+    std::string password = User::getValidPasswordInput();
+
+    User *user = findUser(inputAccountNumber);
+    AccountHolder *accountHolder = nullptr;
+
+    if (user != nullptr)
+    {
+        accountHolder = dynamic_cast<AccountHolder *>(user);
+
+        if (accountHolder != nullptr && user->getPassword() == password)
+        {
+            if (accountHolder->getAccount()->getStatus() != ACTIVE)
+            {
+                std::cout << CURRENT_ACCOUNT_STATUS_MESSAGE << accountHolder->getAccount()->getStatus() << CONTACT_BANK_ERROR_MESSAGE;
+                accountHolder = nullptr;
+            }
+        }
+        else
+        {
+            std::cout << INVALID_PASSWORD_ERROR_MESSAGE;
+            accountHolder = nullptr;
+        }
+    }
+    else
+    {
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
+        accountHolder = nullptr;
+    }
+
+    return accountHolder;
+}
+
+User* Bank::loginAdmin() const
+{
+    std::string username = User::getValidUserNameInput();
+    std::string password = User::getValidPasswordInput();
+
+    User *user = findUser(username);
+
+    if (user != nullptr)
+    {
+        if (user->getPassword() != password)
+        {
+            user = nullptr;
+            std::cout << INVALID_PASSWORD_ERROR_MESSAGE;
+        }
+    }
+    else
+    {
+        std::cout << ADMIN_NOT_FOUND_ERROR_MESSAGE;
+    }
+
+    return user;
+}
+
+User *Bank::login(const std::string &role) const
+{
+    User *user = nullptr;
+
+    if (role == ACCOUNT_HOLDER)
+    {
+        user = loginAccountHolder();
+    }
+    else
+    {
+        user = loginAdmin();
+    }
+
+    return user;
 }

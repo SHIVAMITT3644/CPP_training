@@ -137,7 +137,7 @@ bool Account::withdraw()
     return isWithdrawalSuccessful;
 }
 
-void Account::showTransactions(int startIndex) const
+void Account::displayTransactions(int startIndex) const
 {
     if (transactionCount == 0)
     {
@@ -160,13 +160,13 @@ void Account::displayMiniStatement() const
     std::cout << MINI_STATEMENT_MESSAGE << accountNumber << "\n";
 
     int startTransactionIndex = transactionCount > 5 ? transactionCount - 5 : 0;
-    showTransactions(startTransactionIndex);
+    displayTransactions(startTransactionIndex);
 }
 
 void Account::displayFullStatement() const
 {
     std::cout << FULL_STATEMENT_MESSAGE << accountNumber << "\n";
-    showTransactions(0);
+    displayTransactions(0);
 }
 
 void Account::displayAccountDetails() const
