@@ -1,0 +1,236 @@
+[
+    {
+        "name": "Student1",
+        "age": 18,
+        "rollno": 1,
+        "hobbies": ["Cricket", "Reading"]
+    },
+    {
+        "name": "Student2",
+        "age": 19,
+        "rollno": 2,
+        "sub": {
+            "math": 75,
+            "physics": 82,
+            "chemistry": 70,
+            "english": 85
+        },
+        "hobbies": ["Football", "Music"]
+    },
+    {
+        "name": "Student3",
+        "age": 18,
+        "rollno": 3,
+        "sub": {
+            "math": 92,
+            "physics": 89,
+            "chemistry": 95,
+            "english": 88
+        },
+        "hobbies": ["Coding", "Chess"]
+    },
+    {
+        "name": "Student4",
+        "age": 20,
+        "rollno": 4,
+        "sub": {
+            "math": 65,
+            "physics": 72,
+            "chemistry": 68,
+            "english": 74
+        },
+        "hobbies": ["Drawing", "Gaming"]
+    },
+    {
+        "name": "Student5",
+        "age": 19,
+        "rollno": 5,
+        "sub": {
+            "math": 88,
+            "physics": 91,
+            "chemistry": 84,
+            "english": 79
+        },
+        "hobbies": ["Music", "Travel"]
+    },
+    {
+        "name": "Student6",
+        "age": 18,
+        "rollno": 6,
+        "sub": {
+            "math": 55,
+            "physics": 60,
+            "chemistry": 58,
+            "english": 65
+        },
+        "hobbies": ["Swimming", "Reading"]
+    },
+    {
+        "name": "Student7",
+        "age": 21,
+        "rollno": 7,
+        "sub": {
+            "math": 73,
+            "physics": 69,
+            "chemistry": 75,
+            "english": 80
+        },
+        "hobbies": ["Photography", "Football"]
+    },
+    {
+        "name": "Student8",
+        "age": 20,
+        "rollno": 8,
+        "sub": {
+            "math": 81,
+            "physics": 77,
+            "chemistry": 83,
+            "english": 86
+        },
+        "hobbies": ["Music", "Coding"]
+    },
+    {
+        "name": "Student9",
+        "age": 19,
+        "rollno": 9,
+        "sub": {
+            "math": 90,
+            "physics": 85,
+            "chemistry": 87,
+            "english": 92
+        },
+        "hobbies": ["Cricket", "Chess"]
+    },
+    {
+        "name": "Student10",
+        "age": 18,
+        "rollno": 10,
+        "sub": {
+            "math": 68,
+            "physics": 70,
+            "chemistry": 72,
+            "english": 75
+        },
+        "hobbies": ["Gaming", "Travel"]
+    },
+    {
+        "name": "Student11",
+        "age": 22,
+        "rollno": 11,
+        "sub": {
+            "math": 78,
+            "physics": 74,
+            "chemistry": 80,
+            "english": 82
+        },
+        "hobbies": ["Reading", "Music"]
+    },
+    {
+        "name": "Student12",
+        "age": 20,
+        "rollno": 12,
+        "sub": {
+            "math": 84,
+            "physics": 79,
+            "chemistry": 86,
+            "english": 88
+        },
+        "hobbies": ["Coding", "Drawing"]
+    },
+    {
+        "name": "Student13",
+        "age": 19,
+        "rollno": 13,
+        "sub": {
+            "math": 72,
+            "physics": 68,
+            "chemistry": 74,
+            "english": 76
+        },
+        "hobbies": ["Football", "Photography"]
+    },
+    {
+        "name": "Student14",
+        "age": 21,
+        "rollno": 14,
+        "sub": {
+            "math": 91,
+            "physics": 88,
+            "chemistry": 93,
+            "english": 90
+        },
+        "hobbies": ["Chess", "Music"]
+    },
+    {
+        "name": "Student15",
+        "age": 18,
+        "rollno": 15,
+        "sub": {
+            "math": 60,
+            "physics": 65,
+            "chemistry": 63,
+            "english": 70
+        },
+        "hobbies": ["Travel", "Swimming"]
+    },
+    {
+        "name": "Student16",
+        "age": 22,
+        "rollno": 16,
+        "sub": {
+            "math": 77,
+            "physics": 81,
+            "chemistry": 79,
+            "english": 83
+        },
+        "hobbies": ["Gaming", "Reading"]
+    },
+    {
+        "name": "Student17",
+        "age": 20,
+        "rollno": 17,
+        "sub": {
+            "math": 69,
+            "physics": 73,
+            "chemistry": 71,
+            "english": 78
+        },
+        "hobbies": ["Music", "Cricket"]
+    },
+    {
+        "name": "Student18",
+        "age": 19,
+        "rollno": 18,
+        "sub": {
+            "math": 85,
+            "physics": 87,
+            "chemistry": 82,
+            "english": 84
+        },
+        "hobbies": ["Drawing", "Coding"]
+    },
+    {
+        "name": "Student19",
+        "age": 21,
+        "rollno": 19,
+        "sub": {
+            "math": 58,
+            "physics": 62,
+            "chemistry": 60,
+            "english": 66
+        },
+        "hobbies": ["Photography", "Travel"]
+    },
+    {
+        "name": "Student20",
+        "age": 18,
+        "rollno": 20,
+        "sub": {
+            "math": 94,
+            "physics": 90,
+            "chemistry": 96,
+            "english": 89
+        },
+        "hobbies": ["Chess", "Football"]
+    }
+]
