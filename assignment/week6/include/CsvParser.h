@@ -8,15 +8,13 @@
 class CsvParser : public Parser
 {
     std::string fileName;
-    rapidcsv::Document* csvDocument;
+    rapidcsv::Document csvDocument;
 
 public:
     CsvParser(const std::string& fileName);
 
     bool parseFile() override;
     bool showParsedFile() override;
-
-    ~CsvParser();
 };
 
 #endif

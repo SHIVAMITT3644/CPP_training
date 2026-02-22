@@ -4,38 +4,46 @@
 #include "Constants.h"
 #include "JsonParsor.h"
 #include "CsvParser.h"
+#include "XmlParser.h"
 
 void runJsonParser()
 {
     std::string fileName;
     bool isOperationSuccessful = true;
 
-    fileName = readFileInput("JSON");
+    fileName = readFileInput(JSON);
 
-    JsonParser jsonParser(fileName);
-
-    if (!jsonParser.parseFile())
+    if (!fileName.empty())
     {
-        isOperationSuccessful = false;
-    }
-    else
-    {
-        std::cout << "\nFile Successfully Parsed.\n";
+        JsonParser jsonParser(fileName);
 
-        if (!jsonParser.showParsedFile())
+        if (!jsonParser.parseFile())
         {
-            std::cout << "Error while displaying parsed data.\n";
             isOperationSuccessful = false;
         }
-    }
+        else
+        {
+            std::cout << FILE_PARSED_MESSAGE;
 
-    if (!isOperationSuccessful)
-    {
-        std::cout << "\nJSON Parser Operation Completed With Errors.\n";
+            if (!jsonParser.showParsedFile())
+            {
+                std::cout << FILE_PARSED_FAILED_MESSAGE;
+                isOperationSuccessful = false;
+            }
+        }
+
+        if (isOperationSuccessful)
+        {
+            std::cout << "\n" << JSON << OPERATION_SUCCESS_MESSAGE;
+        }
+        else
+        {
+            std::cout << "\n" << JSON << OPERATION_FAILED_MESSAGE;
+        }
     }
     else
     {
-        std::cout << "\nJSON Parser Operation Completed Successfully.\n";
+        std::cout << "\n" << JSON << OPERATION_CANCELLED_MESSAGE;
     }
 }
 
@@ -44,68 +52,80 @@ void runCsvParser()
     std::string fileName;
     bool isOperationSuccessful = true;
 
-    fileName = readFileInput("CSV");
+    fileName = readFileInput(CSV);
 
-    CsvParser csvParser(fileName);
-
-    if (!csvParser.parseFile())
+    if (!fileName.empty())
     {
-        isOperationSuccessful = false;
-    }
-    else
-    {
-        std::cout << "\nFile Successfully Parsed.\n";
+        CsvParser csvParser(fileName);
 
-        if (!csvParser.showParsedFile())
+        if (!csvParser.parseFile())
         {
-            std::cout << "Error while displaying parsed data.\n";
             isOperationSuccessful = false;
         }
-    }
+        else
+        {
+            std::cout << FILE_PARSED_MESSAGE;
 
-    if (!isOperationSuccessful)
-    {
-        std::cout << "\nCSV Parser Operation Completed With Errors.\n";
+            if (!csvParser.showParsedFile())
+            {
+                std::cout << FILE_PARSED_FAILED_MESSAGE;
+                isOperationSuccessful = false;
+            }
+        }
+
+        if (isOperationSuccessful)
+        {
+            std::cout << "\n" << CSV << OPERATION_SUCCESS_MESSAGE;
+        }
+        else
+        {
+            std::cout << "\n" << CSV << OPERATION_FAILED_MESSAGE;
+        }
     }
     else
     {
-        std::cout << "\nCSV Parser Operation Completed Successfully.\n";
+        std::cout << "\n" << CSV  << OPERATION_CANCELLED_MESSAGE;
     }
 }
-
-#include "XmlParser.h"
 
 void runXmlParser()
 {
     std::string fileName;
     bool isOperationSuccessful = true;
 
-    fileName = readFileInput("XML");
+    fileName = readFileInput(XML);
 
-    XmlParser xmlParser(fileName);
-
-    if (!xmlParser.parseFile())
+    if (!fileName.empty())
     {
-        isOperationSuccessful = false;
-    }
-    else
-    {
-        std::cout << "\nFile Successfully Parsed.\n";
+        XmlParser xmlParser(fileName);
 
-        if (!xmlParser.showParsedFile())
+        if (!xmlParser.parseFile())
         {
-            std::cout << "Error while displaying parsed data.\n";
             isOperationSuccessful = false;
         }
-    }
+        else
+        {
+            std::cout << FILE_PARSED_MESSAGE;
 
-    if (!isOperationSuccessful)
-    {
-        std::cout << "\nXML Parser Operation Completed With Errors.\n";
+            if (!xmlParser.showParsedFile())
+            {
+                std::cout << FILE_PARSED_FAILED_MESSAGE;
+                isOperationSuccessful = false;
+            }
+        }
+
+        if (isOperationSuccessful)
+        {
+            std::cout << "\n" << XML << OPERATION_SUCCESS_MESSAGE;
+        }
+        else
+        {
+            std::cout << "\n" << XML << OPERATION_FAILED_MESSAGE;
+        }
     }
     else
     {
-        std::cout << "\nXML Parser Operation Completed Successfully.\n";
+        std::cout << "\n" << XML << OPERATION_CANCELLED_MESSAGE;
     }
 }
 

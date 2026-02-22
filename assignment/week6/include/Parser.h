@@ -8,8 +8,6 @@ class Parser
 
     virtual bool parseFile() = 0;
     virtual bool showParsedFile() = 0;
-
-    virtual ~Parser(){};
 };
 
 #endif

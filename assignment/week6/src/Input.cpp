@@ -17,8 +17,20 @@ void readCompleteLineInput(std::istream &inputStream, std::string &output, const
         char currentCharacter;
         bool hasNonSpaceCharacter = false;
 
-        while (inputStream >> currentCharacter)
+        while (true)
         {
+            if (!(inputStream >> currentCharacter))
+            {
+                if (inputStream.eof())
+                {
+                    std::cout << FATAL_ERROR_MESSAGE;
+                    std::exit(0);
+                }
+
+                inputStream.clear();
+                break;
+            }
+
             if (currentCharacter == '\n')
             {
                 break;
@@ -164,11 +176,11 @@ bool hasValidExtension(const std::string &fileName, const std::string &type)
 {
     bool isValidExtension = false;
 
-    if (type == "JSON")
+    if (type == JSON)
     {
         isValidExtension = fileName.size() >= 5 && fileName.substr(fileName.size() - 5) == ".json";
     }
-    else if (type == "CSV")
+    else if (type == CSV)
     {
         isValidExtension = fileName.size() >= 4 && fileName.substr(fileName.size() - 4) == ".csv";
     }
@@ -182,18 +194,18 @@ bool hasValidExtension(const std::string &fileName, const std::string &type)
 
 bool fileExists(const std::string& fileName)
 {
-    return std::filesystem::exists("resources/" + fileName);
+    return std::filesystem::exists(RESOURCE_FOLDER_CONSTANT + fileName);
 }
 
 std::string getValidFileName(const std::string &type)
 {
     std::string fileName = "";
 
-    readCompleteLineInput(std::cin, fileName, "Enter Your File Name: ");
+    readCompleteLineInput(std::cin, fileName, FILENAME_INPUT_MESSAGE);
 
     if (!hasValidExtension(fileName, type))
     {
-        std::cout << "Invalid file extension!\n";
+        std::cout << INVALID_FILE_EXTENSION_ERROR;
         fileName = "";
     }
 
@@ -201,7 +213,7 @@ std::string getValidFileName(const std::string &type)
     {
         if (!fileExists(fileName))
         {
-            std::cout << "File not found in resources folder!\n";
+            std::cout << FILE_NOT_FOUND_ERROR_MESSSAGE;
             fileName = "";
         }
     }
@@ -214,7 +226,7 @@ std::string readFileInput(const std::string &type)
     int parserContinueExitChoice = 0;
     std::string fileName;
 
-    while (true)
+    while (parserContinueExitChoice != 2)
     {
 
         if (fileName != "")
@@ -234,7 +246,7 @@ std::string readFileInput(const std::string &type)
             break;
 
         case 2:
-            std::cout << "Exiting ..";
+            std::cout << EXITING_MESSAGE;
             break;
 
         default:

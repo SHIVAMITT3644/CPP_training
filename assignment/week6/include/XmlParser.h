@@ -1,23 +1,23 @@
-#ifndef XML_PARSER_H
-#define XML_PARSER_H
+    #ifndef XML_PARSER_H
+    #define XML_PARSER_H
 
-#include <string>
-#include "Parser.h"
-#include "tinyxml2.h"
+    #include <string>
+    #include "Parser.h"
+    #include "tinyxml2.h"
 
-class XmlParser : public Parser
-{
-private:
-    std::string fileName;
-    tinyxml2::XMLDocument xmlDocument;
-    void printNode(tinyxml2::XMLNode* node, int indentationLevel);
+    class XmlParser : public Parser
+    {
 
-public:
-    XmlParser(const std::string& fileName);
+    private:
+        std::string fileName;
+        tinyxml2::XMLDocument xmlDocument;
+        void showNode(tinyxml2::XMLNode* node, int indentationLevel);
 
-    bool parseFile() override;
-    bool showParsedFile() override;
-    ~XmlParser();
-};
+    public:
+        XmlParser(const std::string& fileName);
 
-#endif
+        bool parseFile() override;
+        bool showParsedFile() override;
+    };
+
+    #endif

@@ -4,20 +4,17 @@
 #include"Parser.h"
 #include "json.hpp"
 
-
 class JsonParser : public Parser
 {
     std::string fileName;
-    nlohmann::ordered_json db;
+    nlohmann::ordered_json jsonObject;
 
-    void printJson(const nlohmann::ordered_json& jsonData , int indentationLevel);
+    void showJson(const nlohmann::ordered_json& jsonData , int indentationLevel);
 
     public:
     JsonParser(const std::string& fileName);
     bool parseFile() override;
     bool showParsedFile() override;
-
-    ~JsonParser();
 };
 
 #endif

@@ -2,46 +2,45 @@
 #include <fstream>
 #include "CsvParser.h"
 #include "rapidcsv.h"
+#include "Constants.h"
 
-CsvParser::CsvParser(const std::string& fileName)
+CsvParser::CsvParser(const std::string& fileName): fileName(fileName)
 {
-    this->fileName = fileName;
 }
 
 bool CsvParser::parseFile()
 {
     bool isParsedSuccessfully = true;
 
-    std::ifstream fileOpened("resources/" + fileName);
+    std::ifstream fileOpened(RESOURCE_FOLDER_CONSTANT + fileName);
 
     try
     {
         if (!fileOpened.is_open())
         {
-            std::cerr << "Error: Unable to open CSV file.\n";
+            std::cerr << CSV_FILE_NOT_OPEN_MESSAGE;
             isParsedSuccessfully = false;
         }
-        else if (fileOpened.peek() == std::ifstream::traits_type::eof())
+        else if (fileOpened.peek() == EOF)
         {
-            std::cerr << "Error: CSV file is empty.\n";
+            std::cerr << CSV_EMPTY_ERROR_MESSAGE;
             isParsedSuccessfully = false;
         }
         else
         {
-            rapidcsv::Document csvDocument("resources/" + fileName);
+            csvDocument = rapidcsv::Document(fileOpened);
         }
     }
     catch (const std::exception& exceptionObject)
     {
-        std::cerr << "\n---------------------------------\n";
-        std::cerr << "CSV Parse Error:\n\n";
+        std::cerr << CSV_PARSING_ERROR_MESSAGE;
         std::cerr << "Message: " << exceptionObject.what() << "\n";
         std::cerr << "---------------------------------\n";
         isParsedSuccessfully = false;
     }
     catch (...)
     {
-        std::cerr << "Unknown error occurred while parsing CSV.\n";
+        std::cerr << CSV_UNKNOWN_ERROR_MESSAGE;
         isParsedSuccessfully = false;
     }
 
@@ -56,9 +55,7 @@ bool CsvParser::showParsedFile()
 
     try
     {
-        std::cout << "\n=========== CSV DATA ===========\n\n";
-
-        rapidcsv::Document csvDocument("resources/" + fileName);
+        std::cout <<  CSV_DATA_TEMPLATE;
 
         size_t totalRows = csvDocument.GetRowCount();
         size_t totalColumns = csvDocument.GetColumnCount();
@@ -79,22 +76,18 @@ bool CsvParser::showParsedFile()
             std::cout << "\n";
         }
 
-        std::cout << "\n=================================\n";
+        std::cout << FORMATING_MESSAGE;
     }
     catch (const std::exception& exceptionObject)
     {
-        std::cerr << "Error displaying CSV: " << exceptionObject.what() << "\n";
+        std::cerr << CSV_ERROR_DISPLAYING_MESSAGE << exceptionObject.what() << "\n";
         isDisplayedSuccessfully = false;
     }
     catch (...)
     {
-        std::cerr << "Unknown error occurred while displaying CSV.\n";
+        std::cerr << CSV_EMPTY_ERROR_MESSAGE;
         isDisplayedSuccessfully = false;
     }
 
     return isDisplayedSuccessfully;
-}
-
-CsvParser::~CsvParser()
-{
 }
