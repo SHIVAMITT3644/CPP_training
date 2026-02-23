@@ -8,30 +8,43 @@ CsvParser::CsvParser(const std::string& fileName): fileName(fileName)
 {
 }
 
-bool CsvParser::parseFile()
+bool CsvParser::openFile(std::ifstream& file, bool& isOpened)
 {
-    bool isParsedSuccessfully = true;
+    file.open(RESOURCE_FOLDER_CONSTANT + fileName);
+    if (!file.is_open())
+    {
+        std::cerr << CSV_FILE_NOT_OPEN_MESSAGE;
+        isOpened = false;
+    }
+    else
+    {
+        isOpened = true;
+    }
+    return isOpened;
+}
 
-    std::ifstream fileOpened(RESOURCE_FOLDER_CONSTANT + fileName);
+bool CsvParser::isFileEmpty(std::ifstream& file, bool& isEmpty)
+{
+    if (file.peek() == EOF)
+    {
+        std::cerr << CSV_EMPTY_ERROR_MESSAGE;
+        isEmpty = true;
+    }
+    else
+    {
+        isEmpty = false;
+    }
+    return isEmpty;
+}
 
+bool CsvParser::parseCsv(std::ifstream& file, bool& isParsedSuccessfully)
+{
     try
     {
-        if (!fileOpened.is_open())
-        {
-            std::cerr << CSV_FILE_NOT_OPEN_MESSAGE;
-            isParsedSuccessfully = false;
-        }
-        else if (fileOpened.peek() == EOF)
-        {
-            std::cerr << CSV_EMPTY_ERROR_MESSAGE;
-            isParsedSuccessfully = false;
-        }
-        else
-        {
-            csvDocument = rapidcsv::Document(fileOpened);
-        }
+        csvDocument = rapidcsv::Document(file);
+        isParsedSuccessfully = true;
     }
-    catch (const std::exception& )
+    catch (const std::exception&)
     {
         std::cerr << CSV_PARSING_ERROR_MESSAGE;
         std::cerr << "---------------------------------\n";
@@ -42,10 +55,74 @@ bool CsvParser::parseFile()
         std::cerr << CSV_UNKNOWN_ERROR_MESSAGE;
         isParsedSuccessfully = false;
     }
-
-    fileOpened.close();
-
     return isParsedSuccessfully;
+}
+
+bool CsvParser::parseFile()
+{
+    bool isParsedSuccessfully = true;
+    bool fileOpenedSuccessfully = false;
+    bool fileIsEmpty = false;
+
+    std::ifstream file;
+
+    openFile(file, fileOpenedSuccessfully);
+
+    if (fileOpenedSuccessfully)
+    {
+        isFileEmpty(file, fileIsEmpty);
+
+        if (!fileIsEmpty)
+        {
+            parseCsv(file, isParsedSuccessfully);
+        }
+        else
+        {
+            isParsedSuccessfully = false;
+        }
+    }
+    else
+    {
+        isParsedSuccessfully = false;
+    }
+
+    file.close();
+    return isParsedSuccessfully;
+}
+bool CsvParser::displayCell(const std::string& cellValue, size_t columnIndex, size_t totalColumns)
+{
+    std::cout << cellValue;
+
+    if (columnIndex < totalColumns - 1)
+    {
+        std::cout << " | ";
+    }
+    return true;
+}
+
+bool CsvParser::displayRow(size_t rowIndex, size_t totalColumns, bool& isDisplayedSuccessfully)
+{
+    for (size_t columnIndex = 0; columnIndex < totalColumns; ++columnIndex)
+    {
+        try
+        {
+            std::string cellValue = csvDocument.GetCell<std::string>(columnIndex, rowIndex);
+            displayCell(cellValue, columnIndex, totalColumns);
+        }
+        catch (const std::exception&)
+        {
+            std::cerr << CSV_ERROR_DISPLAYING_MESSAGE << "\n";
+            isDisplayedSuccessfully = false;
+        }
+        catch (...)
+        {
+            std::cerr << CSV_EMPTY_ERROR_MESSAGE;
+            isDisplayedSuccessfully = false;
+        }
+    }
+
+    std::cout << "\n";
+    return isDisplayedSuccessfully;
 }
 
 bool CsvParser::showParsedFile()
@@ -54,32 +131,21 @@ bool CsvParser::showParsedFile()
 
     try
     {
-        std::cout <<  CSV_DATA_TEMPLATE;
+        std::cout << CSV_DATA_TEMPLATE;
 
         size_t totalRows = csvDocument.GetRowCount();
         size_t totalColumns = csvDocument.GetColumnCount();
 
         for (size_t rowIndex = 0; rowIndex < totalRows; ++rowIndex)
         {
-            for (size_t columnIndex = 0; columnIndex < totalColumns; ++columnIndex)
-            {
-                std::string cellValue = csvDocument.GetCell<std::string>(columnIndex, rowIndex);
-                std::cout << cellValue;
-
-                if (columnIndex < totalColumns - 1)
-                {
-                    std::cout << " | ";
-                }
-            }
-
-            std::cout << "\n";
+            displayRow(rowIndex, totalColumns, isDisplayedSuccessfully);
         }
 
         std::cout << FORMATING_MESSAGE;
     }
     catch (const std::exception&)
     {
-        std::cerr << CSV_ERROR_DISPLAYING_MESSAGE  << "\n";
+        std::cerr << CSV_ERROR_DISPLAYING_MESSAGE << "\n";
         isDisplayedSuccessfully = false;
     }
     catch (...)

@@ -48,8 +48,7 @@ void XmlParser::showNode(XMLNode* node, int indentationLevel)
                 }
             }
             else if (element->GetText())
-            {
-                
+            {              
                 std::cout << element->GetText() << "\n";
             }
             else
@@ -64,38 +63,28 @@ bool XmlParser::showParsedFile()
 {
     bool isDisplayedSuccessfully = true;
 
-    try
+    std::cout << XML_DATA_TEMPLATE;
+    XMLElement* root = xmlDocument.RootElement();
+
+    if (!root)
     {
-        std::cout << XML_DATA_TEMPLATE;
-        XMLElement* root = xmlDocument.RootElement();
-
-        if (!root)
-        {
-            std::cerr << XML_EMPTY_ERROR_MESSAGE;
-            isDisplayedSuccessfully = false;
-        }
-        else
-        {
-            int elementCount = 1;
-
-            for (XMLElement* childElement = root->FirstChildElement();
-                 childElement != nullptr;
-                 childElement = childElement->NextSiblingElement())
-            {
-                std::cout << "Element " << elementCount << ":\n";
-                showNode(childElement, 4);
-                std::cout << FORMATING_MESSAGE;
-                ++elementCount;
-            }
-        }
-
-        std::cout << FORMATING_MESSAGE;
-    }
-    catch (...)
-    {
-        std::cerr << XML_ERROR_DISPLAYING_MESSAGE;
+        std::cout << root->FirstChildElement();
+        std::cerr << XML_EMPTY_ERROR_MESSAGE;
         isDisplayedSuccessfully = false;
     }
+    else
+    {
+        int elementCount = 1;
 
+        for (XMLElement* childElement = root->FirstChildElement(); childElement != nullptr; childElement = childElement->NextSiblingElement())
+        {
+            std::cout << "Element " << elementCount << ":\n";
+            showNode(childElement, 4);
+            std::cout << FORMATING_MESSAGE;
+            ++elementCount;
+        }
+    }
+
+    std::cout << FORMATING_MESSAGE;
     return isDisplayedSuccessfully;
 }

@@ -8,28 +8,41 @@ JsonParser::JsonParser(const std::string& fileName) : fileName(fileName)
 {
 }
 
-bool JsonParser::parseFile()
+bool JsonParser::openFile(std::ifstream& file, bool& isOpened)
 {
-    bool isParsedSuccessfully = true;
+    file.open(RESOURCE_FOLDER_CONSTANT + fileName);
+    if (!file.is_open())
+    {
+        std::cerr << JSON_FILE_NOT_OPEN_MESSAGE;
+        isOpened = false;
+    }
+    else
+    {
+        isOpened = true;
+    }
+    return isOpened;
+}
 
-    std::ifstream fileOpened(RESOURCE_FOLDER_CONSTANT + fileName);
+bool JsonParser::isFileEmpty(std::ifstream& file, bool& isEmpty)
+{
+    if (file.peek() == EOF)
+    {
+        std::cerr << JSON_EMPTY_ERROR_MESSAGE;
+        isEmpty = true;
+    }
+    else
+    {
+        isEmpty = false;
+    }
+    return isEmpty;
+}   
 
+bool JsonParser::parseJson(std::ifstream& file, bool& isParsedSuccessfully)
+{
     try
     {
-        if (!fileOpened.is_open())
-        {
-            std::cerr << JSON_FILE_NOT_OPEN_MESSAGE;
-            isParsedSuccessfully = false;
-        }
-        else if (fileOpened.peek() == EOF)
-        {
-            std::cerr << JSON_EMPTY_ERROR_MESSAGE;
-            isParsedSuccessfully = false;
-        }
-        else
-        {
-            jsonObject = nlohmann::json::parse(fileOpened);
-        }     
+        jsonObject = nlohmann::json::parse(file);
+        isParsedSuccessfully = true;
     }
     catch (const nlohmann::json::parse_error& error)
     {
@@ -38,12 +51,12 @@ bool JsonParser::parseFile()
         std::cerr << FORMATING_MESSAGE;
         isParsedSuccessfully = false;
     }
-    catch (const nlohmann::json::exception& )
+    catch (const nlohmann::json::exception&)
     {
         std::cerr << JSON_EXCEPTION_MESSAGE;
         isParsedSuccessfully = false;
     }
-    catch (const std::exception& )
+    catch (const std::exception&)
     {
         std::cerr << STANDARD_EXCEPTION_MESSAGE;
         isParsedSuccessfully = false;
@@ -53,59 +66,102 @@ bool JsonParser::parseFile()
         std::cerr << UNKNOWN_ERROR_MESSAGE;
         isParsedSuccessfully = false;
     }
-
-    fileOpened.close();
-
     return isParsedSuccessfully;
 }
 
-void JsonParser::showJson(const nlohmann::ordered_json& jsonData, int indentationLevel)
+bool JsonParser::parseFile()
 {
-    std::string indentation(indentationLevel, ' ');
+    bool isParsedSuccessfully = true;
+    bool fileOpenedSuccessfully = false;
+    bool fileIsEmpty = false;
 
-    if (jsonData.is_object())
+    std::ifstream file;
+
+    openFile(file, fileOpenedSuccessfully);
+
+    if (fileOpenedSuccessfully)
     {
-        for (auto objectIterator = jsonData.begin(); objectIterator != jsonData.end(); ++objectIterator)
+        isFileEmpty(file, fileIsEmpty);
+
+        if (!fileIsEmpty)
         {
-            const std::string& keyName = objectIterator.key();
-            const nlohmann::ordered_json& valueData = objectIterator.value();
-
-            std::cout << indentation << keyName << " : ";
-
-            if (valueData.is_structured())
-            {
-                std::cout << "\n";
-                showJson(valueData, indentationLevel + 4);
-            }
-            else
-            {
-                std::cout << valueData << "\n";
-            }
+            parseJson(file, isParsedSuccessfully);
         }
-    }
-    else if (jsonData.is_array())
-    {
-        size_t elementIndex = 1;
-
-        for (const auto& arrayElement : jsonData)
+        else
         {
-            if (indentationLevel == 0)
-            {
-                std::cout << "Element " << elementIndex << ":\n";
-                showJson(arrayElement, indentationLevel + 4);
-                std::cout << FORMATING_MESSAGE;
-            }
-            else
-            {
-                showJson(arrayElement, indentationLevel + 4);
-            }
-
-            ++elementIndex;
+            isParsedSuccessfully = false;
         }
     }
     else
     {
-        std::cout << indentation << jsonData << "\n";
+        isParsedSuccessfully = false;
+    }
+
+    file.close();
+    return isParsedSuccessfully;
+}
+
+void JsonParser::showJsonValue(const nlohmann::ordered_json& jsonData, int indentationLevel)
+{
+    std::string indentation(indentationLevel, ' ');
+    std::cout << indentation << jsonData << "\n";
+}
+
+void JsonParser::showJsonObject(const nlohmann::ordered_json& jsonData, int indentationLevel)
+{
+    std::string indentation(indentationLevel, ' ');
+
+    for (auto objectIterator = jsonData.begin(); objectIterator != jsonData.end(); ++objectIterator)
+    {
+        const std::string& keyName = objectIterator.key();
+        const nlohmann::ordered_json& valueData = objectIterator.value();
+
+        std::cout << indentation << keyName << " : ";
+
+        if (valueData.is_structured())
+        {
+            std::cout << "\n";
+            showJson(valueData, indentationLevel + 4);
+        }
+        else
+        {
+            showJsonValue(valueData, 0);
+        }
+    }
+}
+
+void JsonParser::showJsonArray(const nlohmann::ordered_json& jsonData, int indentationLevel)
+{
+    size_t elementIndex = 1;
+    for (const nlohmann::ordered_json& arrayElement : jsonData)
+    {
+        if (indentationLevel == 0)
+        {
+            std::cout << "Element " << elementIndex << ":\n";
+            showJson(arrayElement, indentationLevel + 4);
+            std::cout << FORMATING_MESSAGE;
+        }
+        else
+        {
+            showJson(arrayElement, indentationLevel + 4);
+        }
+        ++elementIndex;
+    }
+}
+
+void JsonParser::showJson(const nlohmann::ordered_json& jsonData, int indentationLevel)
+{
+    if (jsonData.is_object())
+    {
+        showJsonObject(jsonData, indentationLevel);
+    }
+    else if (jsonData.is_array())
+    {
+        showJsonArray(jsonData, indentationLevel);
+    }
+    else
+    {
+        showJsonValue(jsonData, indentationLevel);
     }
 }
 
