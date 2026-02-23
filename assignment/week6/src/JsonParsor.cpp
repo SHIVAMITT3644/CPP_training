@@ -28,7 +28,7 @@ bool JsonParser::parseFile()
         }
         else
         {
-            fileOpened >> jsonObject;
+            jsonObject = nlohmann::json::parse(fileOpened);
         }     
     }
     catch (const nlohmann::json::parse_error& error)

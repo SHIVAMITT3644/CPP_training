@@ -50,7 +50,7 @@ constexpr const char* UNKNOWN_ERROR_MESSAGE = "Unknown error occurred.\n";
 constexpr const char* CSV_DATA_TEMPLATE = "\n=========== CSV DATA ===========\n\n";
 constexpr const char* CSV_FILE_NOT_OPEN_MESSAGE = "Error: Unable to open CSV file.\n";
 constexpr const char* CSV_EMPTY_ERROR_MESSAGE = "Error: An unexpected error occurred while displaying the CSV file.\n";
-constexpr const char* CSV_ERROR_DISPLAYING_MESSAGE = "\nError: Unable to display CSV content due to an internal processing issue.\n";
+constexpr const char* CSV_ERROR_DISPLAYING_MESSAGE = "\nError: Unable to display CSV content due to incompatible column length.\n";
 constexpr const char* CSV_PARSING_ERROR_MESSAGE = "\n---------------------------------\nError: Failed to parse CSV file. The file may be corrupted or improperly formatted.\n\n";
 
 

@@ -30,30 +30,32 @@ bool XmlParser::parseFile()
 
 void XmlParser::showNode(XMLNode* node, int indentationLevel)
 {
-    if (!node) return;
-
-    std::string indentation(indentationLevel, ' ');
-
-    if (XMLElement* element = node->ToElement())
+    if (node)
     {
-        std::cout << indentation << element->Name() << " : ";
 
-        if (element->FirstChildElement())
+        std::string indentation(indentationLevel, ' ');
+
+        if (XMLElement* element = node->ToElement())
         {
-            std::cout << "\n";
-            for (XMLElement* child = element->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+            std::cout << indentation << element->Name() << " : ";
+
+            if (element->FirstChildElement())
             {
-                showNode(child, indentationLevel + 4);
+                std::cout << "\n";
+                for (XMLElement* child = element->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+                {
+                    showNode(child, indentationLevel + 4);
+                }
             }
-        }
-        else if (element->GetText())
-        {
-            
-            std::cout << element->GetText() << "\n";
-        }
-        else
-        {
-            std::cout << "\n";
+            else if (element->GetText())
+            {
+                
+                std::cout << element->GetText() << "\n";
+            }
+            else
+            {
+                std::cout << "\n";
+            }
         }
     }
 }
