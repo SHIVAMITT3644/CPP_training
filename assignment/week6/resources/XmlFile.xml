@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student id="1">
+        <name>Student1</name>
+        <age>18</age>
+        <rollno>1</rollno>
+        <hobbies>
+            <hobby>Cricket</hobby>
+            <hobby>Reading</hobby>
+        </hobbies>
+    </student>
+
+    <student id="2">
+        <name>Student2</name>
+        <age>19</age>
+        <rollno>2</rollno>
+        <sub>
+            <math>75</math>
+            <physics>82</physics>
+            <chemistry>70</chemistry>
+            <english>85</english>
+        </sub>
+        <hobbies>
+            <hobby>Football</hobby>
+            <hobby>Music</hobby>
+        </hobbies>
+    </student>
+
+    <student id="3">
+        <name>Student3</name>
+        <age>18</age>
+        <rollno>3</rollno>
+        <sub>
+            <math>92</math>
+            <physics>89</physics>
+            <chemistry>95</chemistry>
+            <english>88</english>
+        </sub>
+        <hobbies>
+            <hobby>Coding</hobby>
+            <hobby>Chess</hobby>
+        </hobbies>
+    </student>
+
+    <student id="4">
+        <name>Student4</name>
+        <age>20</age>
+        <rollno>4</rollno>
+        <sub>
+            <math>65</math>
+            <physics>72</physics>
+            <chemistry>68</chemistry>
+            <english>74</english>
+        </sub>
+        <hobbies>
+            <hobby>Drawing</hobby>
+            <hobby>Gaming</hobby>
+        </hobbies>
+    </student>
+
+    <student id="5">
+        <name>Student5</name>
+        <age>19</age>
+        <rollno>5</rollno>
+        <sub>
+            <math>88</math>
+            <physics>91</physics>
+            <chemistry>84</chemistry>
+            <english>79</english>
+        </sub>
+        <hobbies>
+            <hobby>Music</hobby>
+            <hobby>Travel</hobby>
+        </hobbies>
+    </student>
+    <student id="6">
+        <name>Student6</name>
+        <age>18</age>
+        <rollno>6</rollno>
+        <sub>
+            <math>55</math>
+            <physics>60</physics>
+            <chemistry>58</chemistry>
+            <english>65</english>
+        </sub>
+        <hobbies>
+            <hobby>Swimming</hobby>
+            <hobby>Reading</hobby>
+        </hobbies>
+    </student>
+
+    <student id="7">
+        <name>Student7</name>
+        <age>21</age>
+        <rollno>7</rollno>
+        <sub>
+            <math>73</math>
+            <physics>69</physics>
+            <chemistry>75</chemistry>
+            <english>80</english>
+        </sub>
+        <hobbies>
+            <hobby>Photography</hobby>
+            <hobby>Football</hobby>
+        </hobbies>
+    </student>
+
+    <student id="8">
+        <name>Student8</name>
+        <age>20</age>
+        <rollno>8</rollno>
+        <sub>
+            <math>81</math>
+            <physics>77</physics>
+            <chemistry>83</chemistry>
+            <english>86</english>
+        </sub>
+        <hobbies>
+            <hobby>Music</hobby>
+            <hobby>Coding</hobby>
+        </hobbies>
+    </student>
+
+    <student id="9">
+        <name>Student9</name>
+        <age>19</age>
+        <rollno>9</rollno>
+        <sub>
+            <math>90</math>
+            <physics>85</physics>
+            <chemistry>87</chemistry>
+            <english>92</english>
+        </sub>
+        <hobbies>
+            <hobby>Cricket</hobby>
+            <hobby>Chess</hobby>
+        </hobbies>
+    </student>
+
+    <student id="10">
+        <name>Student10</name>
+        <age>18</age>
+        <rollno>10</rollno>
+        <sub>
+            <math>68</math>
+            <physics>70</physics>
+            <chemistry>72</chemistry>
+            <english>75</english>
+        </sub>
+        <hobbies>
+            <hobby>Gaming</hobby>
+            <hobby>Travel</hobby>
+        </hobbies>
+    </student>
+
+    <student id="11">
+        <name>Student11</name>
+        <age>22</age>
+        <rollno>11</rollno>
+        <sub>
+            <math>78</math>
+            <physics>74</physics>
+            <chemistry>80</chemistry>
+            <english>82</english>
+        </sub>
+        <hobbies>
+            <hobby>Reading</hobby>
+            <hobby>Music</hobby>
+        </hobbies>
+    </student>
+
+    <student id="12">
+        <name>Student12</name>
+        <age>20</age>
+        <rollno>12</rollno>
+        <sub>
+            <math>84</math>
+            <physics>79</physics>
+            <chemistry>86</chemistry>
+            <english>88</english>
+        </sub>
+        <hobbies>
+            <hobby>Coding</hobby>
+            <hobby>Drawing</hobby>
+        </hobbies>
+    </student>
+
+    <student id="13">
+        <name>Student13</name>
+        <age>19</age>
+        <rollno>13</rollno>
+        <sub>
+            <math>72</math>
+            <physics>68</physics>
+            <chemistry>74</chemistry>
+            <english>76</english>
+        </sub>
+        <hobbies>
+            <hobby>Football</hobby>
+            <hobby>Photography</hobby>
+        </hobbies>
+    </student>
+
+    <student id="14">
+        <name>Student14</name>
+        <age>21</age>
+        <rollno>14</rollno>
+        <sub>
+            <math>91</math>
+            <physics>88</physics>
+            <chemistry>93</chemistry>
+            <english>90</english>
+        </sub>
+        <hobbies>
+            <hobby>Chess</hobby>
+            <hobby>Music</hobby>
+        </hobbies>
+    </student>
+
+    <student id="15">
+        <name>Student15</name>
+        <age>18</age>
+        <rollno>15</rollno>
+        <sub>
+            <math>60</math>
+            <physics>65</physics>
+            <chemistry>63</chemistry>
+            <english>70</english>
+        </sub>
+        <hobbies>
+            <hobby>Travel</hobby>
+            <hobby>Swimming</hobby>
+        </hobbies>
+    </student>
+
+    <student id="16">
+        <name>Student16</name>
+        <age>22</age>
+        <rollno>16</rollno>
+        <sub>
+            <math>77</math>
+            <physics>81</physics>
+            <chemistry>79</chemistry>
+            <english>83</english>
+        </sub>
+        <hobbies>
+            <hobby>Gaming</hobby>
+            <hobby>Reading</hobby>
+        </hobbies>
+    </student>
+
+    <student id="17">
+        <name>Student17</name>
+        <age>20</age>
+        <rollno>17</rollno>
+        <sub>
+            <math>69</math>
+            <physics>73</physics>
+            <chemistry>71</chemistry>
+            <english>78</english>
+        </sub>
+        <hobbies>
+            <hobby>Music</hobby>
+            <hobby>Cricket</hobby>
+        </hobbies>
+    </student>
+
+    <student id="18">
+        <name>Student18</name>
+        <age>19</age>
+        <rollno>18</rollno>
+        <sub>
+            <math>85</math>
+            <physics>87</physics>
+            <chemistry>82</chemistry>
+            <english>84</english>
+        </sub>
+        <hobbies>
+            <hobby>Drawing</hobby>
+            <hobby>Coding</hobby>
+        </hobbies>
+    </student>
+
+    <student id="19">
+        <name>Student19</name>
+        <age>21</age>
+        <rollno>19</rollno>
+        <sub>
+            <math>58</math>
+            <physics>62</physics>
+            <chemistry>60</chemistry>
+            <english>66</english>
+        </sub>
+        <hobbies>
+            <hobby>Photography</hobby>
+            <hobby>Travel</hobby>
+        </hobbies>
+    </student>
+
+    <student id="20">
+        <name>Student20</name>
+        <age>18</age>
+        <rollno>20</rollno>
+        <sub>
+            <math>94</math>
+            <physics>90</physics>
+            <chemistry>96</chemistry>
+            <english>89</english>
+        </sub>
+        <hobbies>
+            <hobby>Chess</hobby>
+            <hobby>Football</hobby>
+        </hobbies>
+    </student>
+</students>
