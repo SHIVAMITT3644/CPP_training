@@ -31,10 +31,9 @@ bool CsvParser::parseFile()
             csvDocument = rapidcsv::Document(fileOpened);
         }
     }
-    catch (const std::exception& exceptionObject)
+    catch (const std::exception& )
     {
         std::cerr << CSV_PARSING_ERROR_MESSAGE;
-        std::cerr << "Message: " << exceptionObject.what() << "\n";
         std::cerr << "---------------------------------\n";
         isParsedSuccessfully = false;
     }
@@ -78,9 +77,9 @@ bool CsvParser::showParsedFile()
 
         std::cout << FORMATING_MESSAGE;
     }
-    catch (const std::exception& exceptionObject)
+    catch (const std::exception&)
     {
-        std::cerr << CSV_ERROR_DISPLAYING_MESSAGE << exceptionObject.what() << "\n";
+        std::cerr << CSV_ERROR_DISPLAYING_MESSAGE  << "\n";
         isDisplayedSuccessfully = false;
     }
     catch (...)

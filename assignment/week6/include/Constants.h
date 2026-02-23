@@ -5,9 +5,9 @@
 constexpr const char* MAIN_MENU_BODY = R"(
 Welcome to Parser Program
 ============================
-1. Parse Json File
-2. Parse Csv File
-3. Parse Xml File
+1. Parse Json File(.json extension)
+2. Parse Csv File(.csv extension)
+3. Parse Xml File(.xml extension)
 4. Exit
 ============================
 )";
@@ -40,25 +40,24 @@ constexpr const char* OPERATION_FAILED_MESSAGE = "Parser Operation Completed Wit
 constexpr const char* JSON_DATA_TEMPLATE = "\n=========== JSON DATA ===========\n\n";
 constexpr const char* JSON_FILE_NOT_OPEN_MESSAGE = "Error: Unable to open JSON file.\n";
 constexpr const char* JSON_EMPTY_ERROR_MESSAGE = "Error: JSON file is empty.\n";
-constexpr const char* JSON_ERROR_DISPLAYING_MESSAGE = "Error displaying JSON: ";
-constexpr const char* JSON_PARSING_ERROR_MESSAGE = "\n---------------------------------\nJSON Parse Error:\n\n";
+constexpr const char* JSON_ERROR_DISPLAYING_MESSAGE = "Error: Unable to display JSON data due to an internal JSON processing issue.\n";
+constexpr const char* JSON_PARSING_ERROR_MESSAGE = "\n---------------------------------Error: Invalid JSON format. Please check file syntax.\n\n";
 
-constexpr const char* JSON_EXCEPTION_MESSAGE = "JSON Exception:\n";
-constexpr const char* STANDARD_EXCEPTION_MESSAGE = "Standard Exception:\n";
+constexpr const char* JSON_EXCEPTION_MESSAGE = "Error: A JSON processing error occurred. Please verify the JSON structure and values.\n";
+constexpr const char* STANDARD_EXCEPTION_MESSAGE = "Error: An unexpected system error occurred during execution.\n";
 constexpr const char* UNKNOWN_ERROR_MESSAGE = "Unknown error occurred.\n";
 
 constexpr const char* CSV_DATA_TEMPLATE = "\n=========== CSV DATA ===========\n\n";
 constexpr const char* CSV_FILE_NOT_OPEN_MESSAGE = "Error: Unable to open CSV file.\n";
-constexpr const char* CSV_EMPTY_ERROR_MESSAGE = "Error: CSV file is empty.\n";
-constexpr const char* CSV_ERROR_DISPLAYING_MESSAGE = "Error displaying CSV: ";
-constexpr const char* CSV_PARSING_ERROR_MESSAGE = "\n---------------------------------\nCSV Parse Error:\n\n";
+constexpr const char* CSV_EMPTY_ERROR_MESSAGE = "Error: An unexpected error occurred while displaying the CSV file.\n";
+constexpr const char* CSV_ERROR_DISPLAYING_MESSAGE = "\nError: Unable to display CSV content due to an internal processing issue.\n";
+constexpr const char* CSV_PARSING_ERROR_MESSAGE = "\n---------------------------------\nError: Failed to parse CSV file. The file may be corrupted or improperly formatted.\n\n";
 
 
 constexpr const char* XML_DATA_TEMPLATE = "\n=========== XML DATA ===========\n\n";
-constexpr const char* XML_FILE_NOT_OPEN_MESSAGE = "Error: Unable to open XML file.\n";
-constexpr const char* XML_EMPTY_ERROR_MESSAGE = "Error: XML file is empty.\n";
-constexpr const char* XML_ERROR_DISPLAYING_MESSAGE = "XML displaying JSON: ";
-constexpr const char* XML_PARSING_ERROR_MESSAGE = "XMLParse Error:\n";
+constexpr const char* XML_EMPTY_ERROR_MESSAGE = "Error: XML file is empty or missing a root element.\n";
+constexpr const char* XML_ERROR_DISPLAYING_MESSAGE = "Error: An unexpected error occurred while displaying the XML content.\n";
+constexpr const char* XML_PARSING_ERROR_MESSAGE = "Error: Failed to parse XML file. The file may be invalid or corrupted.\n";
 
 constexpr const char* CSV_UNKNOWN_ERROR_MESSAGE = "Unknown error occurred while parsing CSV.\n";
 constexpr const char* INVALID_FILE_EXTENSION_ERROR =  "Invalid file extension!\n";

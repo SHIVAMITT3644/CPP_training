@@ -31,24 +31,21 @@ bool JsonParser::parseFile()
             fileOpened >> jsonObject;
         }     
     }
-    catch (const nlohmann::json::parse_error& e)
+    catch (const nlohmann::json::parse_error& error)
     {
         std::cerr << JSON_PARSING_ERROR_MESSAGE;
-        std::cerr << "Message:   " << e.what() << "\n";
-        std::cerr << "Byte position: " << e.byte << "\n";
+        std::cerr << "Byte position: " << error.byte << "\n";
         std::cerr << FORMATING_MESSAGE;
         isParsedSuccessfully = false;
     }
-    catch (const nlohmann::json::exception& e)
+    catch (const nlohmann::json::exception& )
     {
         std::cerr << JSON_EXCEPTION_MESSAGE;
-        std::cerr << e.what() << "\n";
         isParsedSuccessfully = false;
     }
-    catch (const std::exception& e)
+    catch (const std::exception& )
     {
         std::cerr << STANDARD_EXCEPTION_MESSAGE;
-        std::cerr << e.what() << "\n";
         isParsedSuccessfully = false;
     }
     catch (...)
@@ -124,9 +121,9 @@ bool JsonParser::showParsedFile()
 
         std::cout << FORMATING_MESSAGE;
     }
-    catch (const nlohmann::json::exception& exceptionObject)
+    catch (const nlohmann::json::exception& )
     {
-        std::cerr << JSON_ERROR_DISPLAYING_MESSAGE << exceptionObject.what() << "\n";
+        std::cerr << JSON_ERROR_DISPLAYING_MESSAGE  << "\n";
         isDisplayedSuccessfully = false;
     }
 
