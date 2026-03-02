@@ -3,30 +3,47 @@
 #include "BankSimulator.h"
 #include "IBank.h"
 #include "Admin.h"
-#include "AccountHolder.h"
+#include "IUser.h"
 #include "Input.h"
+#include "Account.h"
+#include "AccountHolder.h"
 #include "Constants.h"
 
-
-bool performDeposit(AccountHolder *accountHolderUser, double amount)
+bool performDeposit(User* accountHolderUser, double amount)
 {
     bool isSuccessful = false;
 
     if (accountHolderUser != nullptr)
     {
-        isSuccessful = accountHolderUser->getAccount()->deposit(amount);
+        if (accountHolderUser->isAccountHolder())
+        {
+            Account* account = accountHolderUser->getAccount();
+
+            if (account != nullptr)
+            {
+                isSuccessful = account->deposit(amount);
+            }
+        }
     }
 
     return isSuccessful;
 }
 
-bool performWithdrawal(AccountHolder *accountHolderUser, double amount)
+bool performWithdrawal(User* accountHolderUser, double amount)
 {
     bool isSuccessful = false;
 
     if (accountHolderUser != nullptr)
     {
-        isSuccessful = accountHolderUser->getAccount()->withdraw(amount);
+        if (accountHolderUser->isAccountHolder())
+        {
+            Account* account = accountHolderUser->getAccount();
+
+            if (account != nullptr)
+            {
+                isSuccessful = account->withdraw(amount);
+            }
+        }
     }
 
     return isSuccessful;
@@ -115,9 +132,7 @@ User* loginAccountHolderFlow(IBank &bank)
     }
     else
     {
-        AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(foundUser);
-
-        if (accountHolder == nullptr)
+        if (!(foundUser->isAccountHolder()) || foundUser->getAccount() == nullptr)
         {
             std::cout << TECHNICAL_ERROR_MESSAGE;
         }
@@ -129,10 +144,10 @@ User* loginAccountHolderFlow(IBank &bank)
             }
             else
             {
-                if (accountHolder->getAccount()->getStatus() != ACTIVE)
+                if (foundUser->getAccount()->getStatus() != ACTIVE)
                 {
                     std::cout << CURRENT_ACCOUNT_STATUS_MESSAGE
-                              << accountHolder->getAccount()->getStatus()
+                              << foundUser->getAccount()->getStatus()
                               << CONTACT_BANK_ERROR_MESSAGE;
                 }
                 else
@@ -297,17 +312,24 @@ void executeAdminAction(Admin *adminUser, IBank &bank, int choice)
 
 void runAdminSimulator(IBank &bank, User *admin)
 {
-    Admin *adminUser = dynamic_cast<Admin *>(admin);
-
-    if (adminUser != nullptr)
+    if (admin != nullptr)
     {
-        int adminChoice = 0;
-
-        while (adminChoice != 6)
+        if (admin->isAdmin())
         {
-            adminUser->showMenu();
-            adminChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
-            executeAdminAction(adminUser, bank, adminChoice);
+            Admin *adminUser = static_cast<Admin*>(admin);
+
+            int adminChoice = 0;
+
+            while (adminChoice != 6)
+            {
+                adminUser->showMenu();
+                adminChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
+                executeAdminAction(adminUser, bank, adminChoice);
+            }
+        }
+        else
+        {
+            std::cout << TECHNICAL_ERROR_MESSAGE;
         }
     }
     else
@@ -316,7 +338,7 @@ void runAdminSimulator(IBank &bank, User *admin)
     }
 }
 
-void handleDepositOperation(AccountHolder *accountHolderUser)
+void handleDepositOperation(User *accountHolderUser)
 {
     double amount = readValidFloatingInput(DEPOSITE_AMOUNT_PROMPT);
 
@@ -335,7 +357,7 @@ void handleDepositOperation(AccountHolder *accountHolderUser)
     }
 }
 
-void handleWithdrawalOperation(AccountHolder *accountHolderUser)
+void handleWithdrawalOperation(User *accountHolderUser)
 {
     double amount = readValidFloatingInput(WITHDRAW_AMOUNT_PROMPT);
 
@@ -361,12 +383,39 @@ void handleWithdrawalOperation(AccountHolder *accountHolderUser)
     }
 }
 
-void executeAccountHolderAction(AccountHolder *accountHolderUser, int choice)
+void displayAccountHolderDetails(User *accountHolderUser)
+{
+    if (accountHolderUser != nullptr)
+    {
+        std::cout << ACCOUNT_HOLDER_NAME
+                  << accountHolderUser->getName()
+                  << std::endl;
+
+        std::cout << ACCOUNT_HOLDER_USERNAME
+                  << accountHolderUser->getUserName()
+                  << std::endl;
+
+        if (accountHolderUser->getAccount() != nullptr)
+        {
+            accountHolderUser->getAccount()->displayAccountDetails();
+        }
+        else
+        {
+            std::cout << ACCOUNT_NOT_FOUND_ERROR_MESSAGE;
+        }
+    }
+    else
+    {
+        std::cout << TECHNICAL_ERROR_MESSAGE;
+    }
+}
+
+void executeAccountHolderAction(User *accountHolderUser, int choice)
 {
     switch (choice)
     {
     case 1:
-        accountHolderUser->displayUserDetails();
+        displayAccountHolderDetails(accountHolderUser);
         break;
 
     case 2:
@@ -402,17 +451,22 @@ void executeAccountHolderAction(AccountHolder *accountHolderUser, int choice)
 
 void runAccountHolderSimulator(User *accountHolder)
 {
-    AccountHolder *accountHolderUser = dynamic_cast<AccountHolder *>(accountHolder);
-
-    if (accountHolderUser != nullptr)
+    if (accountHolder != nullptr)
     {
-        int accountHolderChoice = 0;
-
-        while (accountHolderChoice != 7)
+        if (accountHolder->isAccountHolder() && accountHolder->getAccount() != nullptr)
         {
-            accountHolderUser->showMenu();
-            accountHolderChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
-            executeAccountHolderAction(accountHolderUser, accountHolderChoice);
+            int accountHolderChoice = 0;
+
+            while (accountHolderChoice != 7)
+            {
+                accountHolder->showMenu();
+                accountHolderChoice = readValidUserInput(ENTER_CHOICE_PROMPT);
+                executeAccountHolderAction(accountHolder, accountHolderChoice);
+            }
+        }
+        else
+        {
+            std::cout << TECHNICAL_ERROR_MESSAGE;
         }
     }
     else

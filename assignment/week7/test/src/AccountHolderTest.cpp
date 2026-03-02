@@ -13,7 +13,7 @@ TEST_F(AccountHolderFixture, Constructor_WhenObjectIsCreated_ThenAccountNumberIs
 }
 
 TEST_F(AccountHolderFixture, Constructor_WhenObjectIsCreated_ThenInitialBalanceIsSetCorrectly)
-{
+{   
     ASSERT_NE(accountHolder->getAccount(), nullptr);
     EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), initialBalance);
 }

@@ -16,6 +16,11 @@ AccountHolder::~AccountHolder()
     delete account;
 }
 
+bool AccountHolder::isAccountHolder() const
+{
+    return true;
+}
+
 Account* AccountHolder::getAccount() const
 {
     return account;

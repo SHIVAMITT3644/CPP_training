@@ -1,8 +1,6 @@
-#include "User.h"
+#include "IUser.h"
 #include "Constants.h"
 #include "Input.h"
-#include "Bank.h"
-#include "AccountHolder.h"
 
 std::string User::getName() const
 {
@@ -34,8 +32,22 @@ void User::setPassword(const std::string &password)
     this->password = password;
 }
 
+bool User::isAccountHolder() const
+{
+    return false;
+}
 
-std::string User::getValidUserNameInput() 
+bool User::isAdmin() const
+{
+    return false;
+}
+
+Account* User::getAccount() const
+{
+    return nullptr;
+}
+
+std::string User::getValidUserNameInput()
 {
     std::string userName;
 
@@ -56,7 +68,7 @@ std::string User::getValidUserNameInput()
     return userName;
 }
 
-std::string User::getValidPasswordInput() 
+std::string User::getValidPasswordInput()
 {
     std::string password;
 

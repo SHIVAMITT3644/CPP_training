@@ -4,36 +4,27 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "AccountHolder.h"
-#include "Admin.h"
+#include "MockUser.h"
 #include "MockBank.h"
+#include "Account.h"
+#include "IBank.h"
 
 class BankSimulatorFixture : public ::testing::Test
 {
 protected:
-    AccountHolder* user = nullptr;
-
-    void SetUp() override
-    {
-        user = new AccountHolder("Name", "u1", "p1", 101, 500);
-    }
-
-    void TearDown() override
-    {
-        delete user;
-        user = nullptr;
-    }
+    MockUser mockUser_;
+    Account account_{101, 500.0};
 };
 
 class BankUsecaseFixture : public ::testing::Test
 {
 protected:
-    MockBank bank;
-    int createdAccountNumber = 0;
+    MockBank mockBank_;
+    int createdAccountNumber_ = 0;
 
     void SetUp() override
     {
-        createdAccountNumber = 0;
+        createdAccountNumber_ = 0;
     }
 };
 

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Admin.h"
-#include "AccountHolder.h"
+#include "Account.h"
 #include "Constants.h"
 
 Admin::Admin(const std::string &name, const std::string &userName, const std::string &password)
@@ -17,21 +17,23 @@ void Admin::showMenu() const
     std::cout << ADMIN_MENU_BODY;
 }
 
+bool Admin::isAdmin() const
+{
+    return true;
+}
+
 bool Admin::viewAccountHolderBalance(User* user) const
 {
     bool isSuccessful = false;
 
     if (user != nullptr)
     {
-        AccountHolder* accountHolder =
-            dynamic_cast<AccountHolder*>(user);
-
-        if (accountHolder != nullptr)
+        if (user->isAccountHolder() && user->getAccount() != nullptr)
         {
             std::cout << ACCOUNT_BALANCE_MESSAGE
-                      << accountHolder->getName()
+                      << user->getName()
                       << ": RS "
-                      << accountHolder->getAccount()->getBalance()
+                      << user->getAccount()->getBalance()
                       << "\n";
 
             isSuccessful = true;
@@ -49,45 +51,30 @@ bool Admin::viewAccountHolderBalance(User* user) const
     return isSuccessful;
 }
 
-AccountHolder* Admin::getValidAccountHolder(User* user) const
-{
-    AccountHolder* accountHolder = nullptr;
-
-    if (user != nullptr)
-    {
-        accountHolder = dynamic_cast<AccountHolder*>(user);
-    }
-
-    return accountHolder;
-}
-
-
 bool Admin::viewAccountHolderTransactionHistory(User* user) const
 {
     bool isSuccessful = false;
 
-    AccountHolder* accountHolder = getValidAccountHolder(user);
-
-    if (accountHolder != nullptr)
+    if (user != nullptr)
     {
-        std::cout << TRANSACTION_HISTORY_MESSAGE
-                  << accountHolder->getUserName()
-                  << ":\n";
-
-        accountHolder->getAccount()->displayFullStatement();
-
-        isSuccessful = true;
-    }
-    else
-    {
-        if (user == nullptr)
+        if (user->isAccountHolder() && user->getAccount() != nullptr)
         {
-            std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
+            std::cout << TRANSACTION_HISTORY_MESSAGE
+                      << user->getUserName()
+                      << ":\n";
+
+            user->getAccount()->displayFullStatement();
+
+            isSuccessful = true;
         }
         else
         {
             std::cout << TECHNICAL_ERROR_MESSAGE;
         }
+    }
+    else
+    {
+        std::cout << ACCOUNT_NUMBER_NOT_FOUND_ERROR_MESSAGE;
     }
 
     return isSuccessful;

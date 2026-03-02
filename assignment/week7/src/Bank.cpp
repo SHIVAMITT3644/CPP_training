@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include "Bank.h"
-#include "User.h"
-#include "AccountHolder.h"
+#include "IUser.h"
+#include "Account.h"
 #include "Constants.h"
 
 Bank::Bank(const std::string &bankName)
@@ -85,32 +85,37 @@ bool Bank::removeUser(int accountNumber, IBank::RemovalType type)
 
     for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        AccountHolder *accountHolder =
-            dynamic_cast<AccountHolder *>(*(users + userIndex));
+        User* user = *(users + userIndex);
 
-        if (accountHolder != nullptr)
+        if (user != nullptr)
         {
-            if (accountHolder->getAccount()->getAccountNumber() == accountNumber)
+            if (user->isAccountHolder())
             {
-                if (type == IBank::RemovalType::Temporary)
+                if (user->getAccount() != nullptr)
                 {
-                    if (accountHolder->getAccount()->getStatus() == ACTIVE)
+                    if (user->getAccount()->getAccountNumber() == accountNumber)
                     {
-                        accountHolder->getAccount()->changeStatus(INACTIVE);
-                        isRemoved = true;
-                    }
-                }
-                else
-                {
-                    delete *(users + userIndex);
+                        if (type == IBank::RemovalType::Temporary)
+                        {
+                            if (user->getAccount()->getStatus() == ACTIVE)
+                            {
+                                user->getAccount()->changeStatus(INACTIVE);
+                                isRemoved = true;
+                            }
+                        }
+                        else
+                        {
+                            delete *(users + userIndex);
 
-                    for (int shiftIndex = userIndex; shiftIndex < numberOfUsers - 1; shiftIndex++)
-                    {
-                        *(users + shiftIndex) = *(users + shiftIndex + 1);
-                    }
+                            for (int shiftIndex = userIndex; shiftIndex < numberOfUsers - 1; shiftIndex++)
+                            {
+                                *(users + shiftIndex) = *(users + shiftIndex + 1);
+                            }
 
-                    numberOfUsers--;
-                    isRemoved = true;
+                            numberOfUsers--;
+                            isRemoved = true;
+                        }
+                    }
                 }
             }
         }
@@ -125,14 +130,19 @@ User* Bank::findUser(int accountNumber) const
 
     for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        AccountHolder *accountHolder =
-            dynamic_cast<AccountHolder *>(*(users + userIndex));
+        User* user = *(users + userIndex);
 
-        if (accountHolder != nullptr)
+        if (user != nullptr)
         {
-            if (accountHolder->getAccount()->getAccountNumber() == accountNumber)
+            if (user->isAccountHolder())
             {
-                foundUser = *(users + userIndex);
+                if (user->getAccount() != nullptr)
+                {
+                    if (user->getAccount()->getAccountNumber() == accountNumber)
+                    {
+                        foundUser = user;
+                    }
+                }
             }
         }
     }
@@ -159,18 +169,25 @@ void Bank::displayAllUsers() const
 {
     int accountHolderCount = 0;
 
-    for (int accountHolderIndex = 0; accountHolderIndex < numberOfUsers; accountHolderIndex++)
+    for (int userIndex = 0; userIndex < numberOfUsers; userIndex++)
     {
-        AccountHolder *accountHolder =
-            dynamic_cast<AccountHolder *>(*(users + accountHolderIndex));
+        User* user = *(users + userIndex);
 
-        if (accountHolder != nullptr)
+        if (user != nullptr)
         {
-            accountHolderCount++;
+            if (user->isAccountHolder())
+            {
+                if (user->getAccount() != nullptr)
+                {
+                    accountHolderCount++;
 
-            std::cout << ACCOUNT_HOLDER << " : " << accountHolderCount << "\n";
-            accountHolder->displayUserDetails();
-            std::cout << "-----------------------------------\n";
+                    std::cout << ACCOUNT_HOLDER << " : " << accountHolderCount << "\n";
+                    std::cout << ACCOUNT_HOLDER_NAME << user->getName() << "\n";
+                    std::cout << ACCOUNT_HOLDER_USERNAME << user->getUserName() << "\n";
+                    user->getAccount()->displayAccountDetails();
+                    std::cout << "-----------------------------------\n";
+                }
+            }
         }
     }
 
@@ -192,15 +209,16 @@ User* Bank::login(IBank::Role role, const std::string &id, const std::string &pa
 
         if (user != nullptr)
         {
-            AccountHolder *accountHolder = dynamic_cast<AccountHolder *>(user);
-
-            if (accountHolder != nullptr)
+            if (user->isAccountHolder())
             {
-                if (user->getPassword() == password)
+                if (user->getAccount() != nullptr)
                 {
-                    if (accountHolder->getAccount()->getStatus() == ACTIVE)
+                    if (user->getPassword() == password)
                     {
-                        result = accountHolder;
+                        if (user->getAccount()->getStatus() == ACTIVE)
+                        {
+                            result = user;
+                        }
                     }
                 }
             }
@@ -212,9 +230,12 @@ User* Bank::login(IBank::Role role, const std::string &id, const std::string &pa
 
         if (user != nullptr)
         {
-            if (user->getPassword() == password)
+            if (user->isAdmin())
             {
-                result = user;
+                if (user->getPassword() == password)
+                {
+                    result = user;
+                }
             }
         }
     }

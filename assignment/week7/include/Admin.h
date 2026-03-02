@@ -1,21 +1,18 @@
 #ifndef ADMIN_H
 #define ADMIN_H
 
-#include "User.h"
-class AccountHolder;
+#include "IUser.h"
 
 class Admin : public User
 {
-    
 public:
     Admin(const std::string &name, const std::string &userName, const std::string &password);
 
     void showMenu() const override;
 
-    AccountHolder* getValidAccountHolder(User* user) const;
+    bool isAdmin() const override;
 
     bool viewAccountHolderBalance(User* user) const;
-
     bool viewAccountHolderTransactionHistory(User* user) const;
 };
 

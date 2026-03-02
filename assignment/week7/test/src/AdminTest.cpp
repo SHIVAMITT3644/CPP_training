@@ -1,54 +1,58 @@
 #include "AdminTest.h"
 
-TEST_F(AdminFixture, WhenUserIsNull_ThenReturnsNull)
+using ::testing::Return;
+using ::testing::_;
+
+TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserIsNull_ThenReturnsFalse)
 {
-    AccountHolder* result = admin->getValidAccountHolder(nullptr);
-    EXPECT_EQ(result, nullptr);
+    EXPECT_FALSE(admin_->viewAccountHolderBalance(nullptr));
 }
 
-TEST_F(AdminFixture, WhenUserIsNotAccountHolder_ThenReturnsNull)
+TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserIsNotAccountHolder_ThenReturnsFalse)
 {
-    User* user = new Admin("AnotherAdmin", "x", "y");
+    EXPECT_CALL(*mockUser_, isAccountHolder())
+        .WillOnce(Return(false));
 
-    AccountHolder* result = admin->getValidAccountHolder(user);
-    EXPECT_EQ(result, nullptr);
-
-    delete user;
+    EXPECT_FALSE(admin_->viewAccountHolderBalance(mockUser_));
 }
 
-TEST_F(AdminFixture, WhenUserIsAccountHolder_ThenReturnsAccountHolderPointer)
+TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserIsAccountHolder_ThenReturnsTrue)
 {
-    User* user = new AccountHolder("A", "user1", "pass1", 1, 500.0);
+    EXPECT_CALL(*mockUser_, isAccountHolder())
+        .WillOnce(Return(true));
 
-    AccountHolder* result = admin->getValidAccountHolder(user);
+    EXPECT_CALL(*mockUser_, getAccount())
+        .WillRepeatedly(Return(account_));
 
-    ASSERT_NE(result, nullptr);
-    EXPECT_EQ(result->getUserName(), "user1");
+    EXPECT_CALL(*mockUser_, getName())
+        .WillOnce(Return("user1"));
 
-    delete user;
+    EXPECT_TRUE(admin_->viewAccountHolderBalance(mockUser_));
 }
 
 TEST_F(AdminFixture, ViewAccountHolderTransactionHistory_WhenUserIsNull_ThenReturnsFalse)
 {
-    EXPECT_FALSE(admin->viewAccountHolderTransactionHistory(nullptr));
+    EXPECT_FALSE(admin_->viewAccountHolderTransactionHistory(nullptr));
 }
 
 TEST_F(AdminFixture, ViewAccountHolderTransactionHistory_WhenUserIsNotAccountHolder_ThenReturnsFalse)
 {
-    User* user = new Admin("AnotherAdmin", "x", "y");
+    EXPECT_CALL(*mockUser_, isAccountHolder())
+        .WillOnce(Return(false));
 
-    bool result = admin->viewAccountHolderTransactionHistory(user);
-    EXPECT_FALSE(result);
-
-    delete user;
+    EXPECT_FALSE(admin_->viewAccountHolderTransactionHistory(mockUser_));
 }
 
 TEST_F(AdminFixture, ViewAccountHolderTransactionHistory_WhenUserIsAccountHolder_ThenReturnsTrue)
 {
-    User* user = new AccountHolder("A", "user1", "pass1", 1, 500.0);
+    EXPECT_CALL(*mockUser_, isAccountHolder())
+        .WillOnce(Return(true));
 
-    bool result = admin->viewAccountHolderTransactionHistory(user);
-    EXPECT_TRUE(result);
+    EXPECT_CALL(*mockUser_, getAccount())
+        .WillRepeatedly(Return(account_));
 
-    delete user;
+    EXPECT_CALL(*mockUser_, getUserName())
+        .WillOnce(Return("user1"));
+
+    EXPECT_TRUE(admin_->viewAccountHolderTransactionHistory(mockUser_));
 }

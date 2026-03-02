@@ -1,7 +1,7 @@
 #ifndef ACCOUNTHOLDER_H
 #define ACCOUNTHOLDER_H
 
-#include "User.h"
+#include "IUser.h"
 #include "Account.h"
 
 class AccountHolder : public User
@@ -17,7 +17,9 @@ public:
 
     ~AccountHolder();
 
-    Account* getAccount() const;
+    bool isAccountHolder() const override;
+
+    Account* getAccount() const override;
 
     void showMenu() const override;
     void displayUserDetails() const;
