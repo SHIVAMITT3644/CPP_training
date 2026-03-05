@@ -10,17 +10,17 @@ protected:
     static constexpr int accountNumber = 10;
     static constexpr double initialBalance = 1000.0;
 
-    AccountHolder* accountHolder = nullptr;
+    AccountHolder* accountHolder_ = nullptr;
 
     void SetUp() override
     {
-        accountHolder = new AccountHolder("Name", "user1", "pass1", accountNumber, initialBalance);
+        accountHolder_ = new AccountHolder("Name", "user1", "pass1", accountNumber, initialBalance);
     }
 
     void TearDown() override
     {
-        delete accountHolder;
-        accountHolder = nullptr;
+        delete accountHolder_;
+        accountHolder_ = nullptr;
     }
 };
 

@@ -9,4 +9,5 @@ int main()
     bank.addUser(new Admin("Shivam Pratap", "shivam123", "admin123"));
 
     runBankSimulator(bank);
+    return 0;
 }

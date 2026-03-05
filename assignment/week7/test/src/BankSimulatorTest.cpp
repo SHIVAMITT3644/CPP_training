@@ -108,7 +108,7 @@ TEST_F(BankSimulatorFixture, PerformWithdrawal_WhenUserIsNotAccountHolder_ThenRe
     EXPECT_DOUBLE_EQ(account_.getBalance(), 500.0);
 }
 
-TEST_F(BankSimulatorFixture, PerformWithdrawal_WhenAccountIsNull_ThenReturnsFalse)
+TEST_F(BankSimulatorFixture, PerformWithdrawal_WhenAccountDoesNotExist_ThenReturnsFalse)
 {
     EXPECT_CALL(mockUser_, isAccountHolder())
         .Times(1)

@@ -2,10 +2,10 @@
 
 TEST_P(AccountDepositInvalidAmountFixture, Deposit_WhenAmountIsZeroOrNegative_ThenOperationFails)
 {
-    ASSERT_NE(accountZero, nullptr);
+    ASSERT_NE(accountZero_, nullptr);
 
-    EXPECT_FALSE(accountZero->deposit(GetParam()));
-    EXPECT_DOUBLE_EQ(accountZero->getBalance(), zeroBalance);
+    EXPECT_FALSE(accountZero_->deposit(GetParam()));
+    EXPECT_DOUBLE_EQ(accountZero_->getBalance(), zeroBalance_);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -16,18 +16,18 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_F(AccountFixture, Deposit_WhenAmountIsPositive_ThenBalanceIsIncreased)
 {
-    ASSERT_NE(accountZero, nullptr);
+    ASSERT_NE(accountZero_, nullptr);
 
-    EXPECT_TRUE(accountZero->deposit(100.0));
-    EXPECT_DOUBLE_EQ(accountZero->getBalance(), 100.0);
+    EXPECT_TRUE(accountZero_->deposit(100.0));
+    EXPECT_DOUBLE_EQ(accountZero_->getBalance(), 100.0);
 }
 
 TEST_P(AccountWithdrawInvalidAmountFixture, Withdraw_WhenAmountIsZeroNegativeOrExceedsBalance_ThenOperationFails)
 {
-    ASSERT_NE(accountWithBalance, nullptr);
+    ASSERT_NE(accountWithBalance_, nullptr);
 
-    EXPECT_FALSE(accountWithBalance->withdraw(GetParam()));
-    EXPECT_DOUBLE_EQ(accountWithBalance->getBalance(), initialBalance);
+    EXPECT_FALSE(accountWithBalance_->withdraw(GetParam()));
+    EXPECT_DOUBLE_EQ(accountWithBalance_->getBalance(), initialBalance_);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -38,8 +38,8 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_F(AccountFixture, Withdraw_WhenAmountIsWithinBalance_ThenBalanceIsDecreased)
 {
-    ASSERT_NE(accountWithBalance, nullptr);
+    ASSERT_NE(accountWithBalance_, nullptr);
 
-    EXPECT_TRUE(accountWithBalance->withdraw(20.0));
-    EXPECT_DOUBLE_EQ(accountWithBalance->getBalance(), 30.0);
+    EXPECT_TRUE(accountWithBalance_->withdraw(20.0));
+    EXPECT_DOUBLE_EQ(accountWithBalance_->getBalance(), 30.0);
 }

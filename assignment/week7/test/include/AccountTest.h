@@ -8,26 +8,27 @@
 class AccountFixture : public ::testing::Test
 {
 protected:
-    static constexpr int accountNumber = 1;
-    static constexpr double zeroBalance = 0.0;
-    static constexpr double initialBalance = 50.0;
+    static constexpr int accountNumberZero_ = 1;
+    static constexpr int accountNumberWithBalance_ = 2;
+    static constexpr double zeroBalance_ = 0.0;
+    static constexpr double initialBalance_ = 50.0;
 
-    Account* accountZero = nullptr;
-    Account* accountWithBalance = nullptr;
+    Account* accountZero_ = nullptr;
+    Account* accountWithBalance_ = nullptr;
 
     void SetUp() override
     {
-        accountZero = new Account(accountNumber, zeroBalance, ACTIVE);
-        accountWithBalance = new Account(accountNumber, initialBalance, ACTIVE);
+        accountZero_ = new Account(accountNumberZero_, zeroBalance_, ACTIVE);
+        accountWithBalance_ = new Account(accountNumberWithBalance_, initialBalance_, ACTIVE);
     }
 
     void TearDown() override
     {
-        delete accountZero;
-        delete accountWithBalance;
+        delete accountZero_;
+        delete accountWithBalance_;
 
-        accountZero = nullptr;
-        accountWithBalance = nullptr;
+        accountZero_ = nullptr;
+        accountWithBalance_ = nullptr;
     }
 };
 

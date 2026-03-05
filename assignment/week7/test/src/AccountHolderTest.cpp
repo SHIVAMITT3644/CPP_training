@@ -2,36 +2,36 @@
 
 TEST_F(AccountHolderFixture, Constructor_WhenObjectIsCreated_ThenAccountIsNotNull)
 {
-    ASSERT_NE(accountHolder, nullptr);
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_, nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 }
 
 TEST_F(AccountHolderFixture, Constructor_WhenObjectIsCreated_ThenAccountNumberIsSetCorrectly)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
-    EXPECT_EQ(accountHolder->getAccount()->getAccountNumber(), accountNumber);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
+    EXPECT_EQ(accountHolder_->getAccount()->getAccountNumber(), accountNumber);
 }
 
 TEST_F(AccountHolderFixture, Constructor_WhenObjectIsCreated_ThenInitialBalanceIsSetCorrectly)
 {   
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
-    EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), initialBalance);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
+    EXPECT_DOUBLE_EQ(accountHolder_->getAccount()->getBalance(), initialBalance);
 }
 
 TEST_F(AccountHolderFixture, Deposit_WhenAmountIsPositive_ThenBalanceIsIncreased)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 
-    EXPECT_TRUE(accountHolder->getAccount()->deposit(200.0));
-    EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), 1200.0);
+    EXPECT_TRUE(accountHolder_->getAccount()->deposit(200.0));
+    EXPECT_DOUBLE_EQ(accountHolder_->getAccount()->getBalance(), 1200.0);
 }
 
 TEST_P(AccountHolderDepositInvalidAmountFixture, Deposit_WhenAmountIsZeroOrNegative_ThenOperationFails)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 
-    EXPECT_FALSE(accountHolder->getAccount()->deposit(GetParam()));
-    EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), initialBalance);
+    EXPECT_FALSE(accountHolder_->getAccount()->deposit(GetParam()));
+    EXPECT_DOUBLE_EQ(accountHolder_->getAccount()->getBalance(), initialBalance);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -42,25 +42,25 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_F(AccountHolderFixture, Withdraw_WhenAmountIsWithinBalance_ThenBalanceIsDecreased)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 
-    EXPECT_TRUE(accountHolder->getAccount()->withdraw(300.0));
-    EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), 700.0);
+    EXPECT_TRUE(accountHolder_->getAccount()->withdraw(300.0));
+    EXPECT_DOUBLE_EQ(accountHolder_->getAccount()->getBalance(), 700.0);
 }
 
 TEST_F(AccountHolderFixture, Withdraw_WhenAmountExceedsBalance_ThenOperationFails)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 
-    EXPECT_FALSE(accountHolder->getAccount()->withdraw(2000.0));
-    EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), initialBalance);
+    EXPECT_FALSE(accountHolder_->getAccount()->withdraw(2000.0));
+    EXPECT_DOUBLE_EQ(accountHolder_->getAccount()->getBalance(), initialBalance);
 }
 
 TEST_P(AccountHolderWithdrawInvalidAmountFixture, Withdraw_WhenAmountIsZeroOrNegative_ThenOperationFails)
 {
-    ASSERT_NE(accountHolder->getAccount(), nullptr);
+    ASSERT_NE(accountHolder_->getAccount(), nullptr);
 
-    EXPECT_FALSE(accountHolder->getAccount()->withdraw(GetParam()));
+    EXPECT_FALSE(accountHolder_->getAccount()->withdraw(GetParam()));
     EXPECT_DOUBLE_EQ(accountHolder->getAccount()->getBalance(), initialBalance);
 }
 

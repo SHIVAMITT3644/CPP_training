@@ -20,7 +20,7 @@ class BankUsecaseFixture : public ::testing::Test
 {
 protected:
     MockBank mockBank_;
-    int createdAccountNumber_ = 0;
+    int createdAccountNumber_ ;
 
     void SetUp() override
     {

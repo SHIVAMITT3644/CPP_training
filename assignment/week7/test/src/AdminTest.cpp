@@ -3,7 +3,7 @@
 using ::testing::Return;
 using ::testing::_;
 
-TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserIsNull_ThenReturnsFalse)
+TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserDoesNotExist_ThenReturnsFalse)
 {
     EXPECT_FALSE(admin_->viewAccountHolderBalance(nullptr));
 }
@@ -30,7 +30,7 @@ TEST_F(AdminFixture, ViewAccountHolderBalance_WhenUserIsAccountHolder_ThenReturn
     EXPECT_TRUE(admin_->viewAccountHolderBalance(mockUser_));
 }
 
-TEST_F(AdminFixture, ViewAccountHolderTransactionHistory_WhenUserIsNull_ThenReturnsFalse)
+TEST_F(AdminFixture, ViewAccountHolderTransactionHistory_WhenUserDoesNotExist_ThenReturnsFalse)
 {
     EXPECT_FALSE(admin_->viewAccountHolderTransactionHistory(nullptr));
 }

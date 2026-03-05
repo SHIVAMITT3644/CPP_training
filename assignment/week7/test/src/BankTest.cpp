@@ -23,136 +23,136 @@ TEST(BankTests, GenerateAccountNumber_WhenCalledOnNewBankInstances_ThenStartsFro
 
 TEST_F(BankFixture, AddUser_WhenUsernameAlreadyExists_ThenReturnsFalse)
 {
-    NiceMock<MockUser>* user1_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*user1_, getUserName()).WillRepeatedly(Return("adminUser"));
-    EXPECT_CALL(*user1_, isAccountHolder()).WillRepeatedly(Return(false));
-    EXPECT_CALL(*user1_, getAccount()).WillRepeatedly(Return(nullptr));
+    NiceMock<MockUser>* user1 = new NiceMock<MockUser>();
+    EXPECT_CALL(*user1, getUserName()).WillRepeatedly(Return("adminUser"));
+    EXPECT_CALL(*user1, isAccountHolder()).WillRepeatedly(Return(false));
+    EXPECT_CALL(*user1, getAccount()).WillRepeatedly(Return(nullptr));
 
-    EXPECT_TRUE(bank_->addUser(user1_));
+    EXPECT_TRUE(bank_->addUser(user1));
 
-    NiceMock<MockUser>* user2_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*user2_, getUserName()).WillRepeatedly(Return("adminUser"));
-    EXPECT_CALL(*user2_, isAccountHolder()).WillRepeatedly(Return(false));
-    EXPECT_CALL(*user2_, getAccount()).WillRepeatedly(Return(nullptr));
+    NiceMock<MockUser>* user2 = new NiceMock<MockUser>();
+    EXPECT_CALL(*user2, getUserName()).WillRepeatedly(Return("adminUser"));
+    EXPECT_CALL(*user2, isAccountHolder()).WillRepeatedly(Return(false));
+    EXPECT_CALL(*user2, getAccount()).WillRepeatedly(Return(nullptr));
 
-    EXPECT_FALSE(bank_->addUser(user2_));
+    EXPECT_FALSE(bank_->addUser(user2));
 
-    delete user2_;
-    user2_ = nullptr;
+    delete user2;
+    user2 = nullptr;
 }
 
 TEST_F(BankFixture, FindUser_WhenUsernameExists_ThenReturnsCorrectUser)
 {
-    NiceMock<MockUser>* admin_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*admin_, getUserName()).WillRepeatedly(Return("adminUser"));
-    EXPECT_CALL(*admin_, isAccountHolder()).WillRepeatedly(Return(false));
-    EXPECT_CALL(*admin_, getAccount()).WillRepeatedly(Return(nullptr));
+    NiceMock<MockUser>* admin = new NiceMock<MockUser>();
+    EXPECT_CALL(*admin, getUserName()).WillRepeatedly(Return("adminUser"));
+    EXPECT_CALL(*admin, isAccountHolder()).WillRepeatedly(Return(false));
+    EXPECT_CALL(*admin, getAccount()).WillRepeatedly(Return(nullptr));
 
-    EXPECT_TRUE(bank_->addUser(admin_));
+    EXPECT_TRUE(bank_->addUser(admin));
 
-    User* found_ = bank_->findUser("adminUser");
+    User* found = bank_->findUser("adminUser");
 
-    ASSERT_NE(found_, nullptr);
-    EXPECT_EQ(found_, admin_);
+    ASSERT_NE(found, nullptr);
+    EXPECT_EQ(found, admin);
 }
 
 TEST_F(BankFixture, AddUser_WhenAccountHolderAdded_ThenCanBeFoundByAccountNumber)
 {
-    const int accountNumber_ = bank_->generateAccountNumber();
+    const int accountNumber = bank_->generateAccountNumber();
 
-    Account* account_ = new Account(accountNumber_, 0.0, ACTIVE);
+    Account* account = new Account(accountNumber, 0.0, ACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, getPassword()).WillRepeatedly(Return("pass1"));
-    EXPECT_CALL(*accountHolder_, getName()).WillRepeatedly(Return("A"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, getPassword()).WillRepeatedly(Return("pass1"));
+    EXPECT_CALL(*accountHolder, getName()).WillRepeatedly(Return("A"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
-    User* found_ = bank_->findUser(accountNumber_);
+    User* found = bank_->findUser(accountNumber);
 
-    ASSERT_NE(found_, nullptr);
-    EXPECT_EQ(found_, accountHolder_);
-    ASSERT_NE(found_->getAccount(), nullptr);
-    EXPECT_EQ(found_->getAccount()->getAccountNumber(), accountNumber_);
+    ASSERT_NE(found, nullptr);
+    EXPECT_EQ(found, accountHolder);
+    ASSERT_NE(found->getAccount(), nullptr);
+    EXPECT_EQ(found->getAccount()->getAccountNumber(), accountNumber);
 
-    delete account_;
-    account_ = nullptr;
+    delete account;
+    account = nullptr;
 }
 
 TEST_F(BankFixture, RemoveUser_WhenRemovalTypeIsTemporary_ThenAccountBecomesInactive)
 {
-    const int accountNumber_ = bank_->generateAccountNumber();
+    const int accountNumber = bank_->generateAccountNumber();
 
-    Account* account_ = new Account(accountNumber_, 100.0, ACTIVE);
+    Account* account = new Account(accountNumber, 100.0, ACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
-    EXPECT_TRUE(bank_->removeUser(accountNumber_, IBank::RemovalType::Temporary));
+    EXPECT_TRUE(bank_->removeUser(accountNumber, IBank::RemovalType::Temporary));
 
-    User* found_ = bank_->findUser(accountNumber_);
+    User* found = bank_->findUser(accountNumber);
 
-    ASSERT_NE(found_, nullptr);
-    ASSERT_NE(found_->getAccount(), nullptr);
-    EXPECT_EQ(found_->getAccount()->getStatus(), INACTIVE);
+    ASSERT_NE(found, nullptr);
+    ASSERT_NE(found->getAccount(), nullptr);
+    EXPECT_EQ(found->getAccount()->getStatus(), INACTIVE);
 
-    delete account_;
-    account_ = nullptr;
+    delete account;
+    account = nullptr;
 }
 
 TEST_F(BankFixture, RemoveUser_WhenRemovalTypeIsPermanent_ThenAccountHolderIsDeleted)
 {
-    const int accountNumber_ = bank_->generateAccountNumber();
+    const int accountNumber = bank_->generateAccountNumber();
 
-    Account* account_ = new Account(accountNumber_, 100.0, ACTIVE);
+    Account* account = new Account(accountNumber, 100.0, ACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
-    EXPECT_TRUE(bank_->removeUser(accountNumber_, IBank::RemovalType::Permanent));
+    EXPECT_TRUE(bank_->removeUser(accountNumber, IBank::RemovalType::Permanent));
 
-    EXPECT_EQ(bank_->findUser(accountNumber_), nullptr);
+    EXPECT_EQ(bank_->findUser(accountNumber), nullptr);
 
-    delete account_;
-    account_ = nullptr;
+    delete account;
+    account = nullptr;
 }
 
 TEST_F(BankFixture, Login_WhenAdminCredentialsAreValid_ThenReturnsUser)
 {
-    NiceMock<MockUser>* admin_ = new NiceMock<MockUser>();
+    NiceMock<MockUser>* admin = new NiceMock<MockUser>();
 
-    EXPECT_CALL(*admin_, getUserName()).WillRepeatedly(Return("adminUser"));
-    EXPECT_CALL(*admin_, isAdmin()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*admin_, getPassword()).WillRepeatedly(Return("adminPass"));
+    EXPECT_CALL(*admin, getUserName()).WillRepeatedly(Return("adminUser"));
+    EXPECT_CALL(*admin, isAdmin()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*admin, getPassword()).WillRepeatedly(Return("adminPass"));
 
-    EXPECT_TRUE(bank_->addUser(admin_));
+    EXPECT_TRUE(bank_->addUser(admin));
 
     User* result_ = bank_->login(IBank::Role::Admin, "adminUser", "adminPass");
 
     ASSERT_NE(result_, nullptr);
-    EXPECT_EQ(result_, admin_);
+    EXPECT_EQ(result_, admin);
 }
 
 TEST_F(BankFixture, Login_WhenAdminPasswordIsInvalid_ThenReturnsNull)
 {
-    NiceMock<MockUser>* admin_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*admin_, getUserName()).WillRepeatedly(Return("adminUser"));
-    EXPECT_CALL(*admin_, getPassword()).WillRepeatedly(Return("adminPass"));
-    EXPECT_CALL(*admin_, isAccountHolder()).WillRepeatedly(Return(false));
-    EXPECT_CALL(*admin_, getAccount()).WillRepeatedly(Return(nullptr));
+    NiceMock<MockUser>* admin = new NiceMock<MockUser>();
+    EXPECT_CALL(*admin, getUserName()).WillRepeatedly(Return("adminUser"));
+    EXPECT_CALL(*admin, getPassword()).WillRepeatedly(Return("adminPass"));
+    EXPECT_CALL(*admin, isAccountHolder()).WillRepeatedly(Return(false));
+    EXPECT_CALL(*admin, getAccount()).WillRepeatedly(Return(nullptr));
 
-    EXPECT_TRUE(bank_->addUser(admin_));
+    EXPECT_TRUE(bank_->addUser(admin));
 
     EXPECT_EQ(bank_->login(IBank::Role::Admin, "adminUser", "wrong"), nullptr);
 }
@@ -167,19 +167,19 @@ TEST_F(BankFixture, Login_WhenAccountHolderCredentialsAreValidAndActive_ThenRetu
     const int accountNumber_ = bank_->generateAccountNumber();
     Account* account_ = new Account(accountNumber_, 100.0, ACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
 
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getPassword()).WillRepeatedly(Return("pass1"));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getPassword()).WillRepeatedly(Return("pass1"));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account_));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
     User* result_ = bank_->login(IBank::Role::AccountHolder, std::to_string(accountNumber_), "pass1");
 
     ASSERT_NE(result_, nullptr);
-    EXPECT_EQ(result_, accountHolder_);
+    EXPECT_EQ(result_, accountHolder);
 
     delete account_;
 }
@@ -190,13 +190,13 @@ TEST_F(BankFixture, Login_WhenAccountHolderPasswordIsInvalid_ThenReturnsNull)
 
     Account* account_ = new Account(accountNumber_, 100.0, ACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, getPassword()).WillRepeatedly(Return("pass1"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, getPassword()).WillRepeatedly(Return("pass1"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account_));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
     EXPECT_EQ(bank_->login(IBank::Role::AccountHolder, std::to_string(accountNumber_), "wrong"), nullptr);
 
@@ -210,13 +210,13 @@ TEST_F(BankFixture, Login_WhenAccountHolderIsInactive_ThenReturnsNull)
 
     Account* account_ = new Account(accountNumber_, 100.0, INACTIVE);
 
-    NiceMock<MockUser>* accountHolder_ = new NiceMock<MockUser>();
-    EXPECT_CALL(*accountHolder_, getUserName()).WillRepeatedly(Return("user1"));
-    EXPECT_CALL(*accountHolder_, getPassword()).WillRepeatedly(Return("pass1"));
-    EXPECT_CALL(*accountHolder_, isAccountHolder()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*accountHolder_, getAccount()).WillRepeatedly(Return(account_));
+    NiceMock<MockUser>* accountHolder = new NiceMock<MockUser>();
+    EXPECT_CALL(*accountHolder, getUserName()).WillRepeatedly(Return("user1"));
+    EXPECT_CALL(*accountHolder, getPassword()).WillRepeatedly(Return("pass1"));
+    EXPECT_CALL(*accountHolder, isAccountHolder()).WillRepeatedly(Return(true));
+    EXPECT_CALL(*accountHolder, getAccount()).WillRepeatedly(Return(account_));
 
-    EXPECT_TRUE(bank_->addUser(accountHolder_));
+    EXPECT_TRUE(bank_->addUser(accountHolder));
 
     EXPECT_EQ(bank_->login(IBank::Role::AccountHolder, std::to_string(accountNumber_), "pass1"), nullptr);
 
