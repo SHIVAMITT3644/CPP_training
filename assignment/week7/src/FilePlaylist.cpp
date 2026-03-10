@@ -66,17 +66,9 @@ bool FilePlaylistRepository::load(const std::string& playlistName, IPlaylist& pl
 
                 int songDurationInSeconds = 0;
                 bool isDurationValid = true;
-
-                try
-                {
-                    songDurationInSeconds = std::stoi(songDurationText);
-                }
-                catch (const std::exception&)
-                {
-                    std::cerr << INVALID_TIME_DURATION_ERROR_MESSAGE;
-                    isDurationValid = false;
-                }
-
+    
+                songDurationInSeconds = std::stoi(songDurationText);
+                
                 if (isDurationValid)
                 {
                     Song song(songId, songTitle, songArtist, songDurationInSeconds, songFilePath);

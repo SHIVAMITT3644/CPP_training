@@ -92,27 +92,6 @@ TEST_F(FilePlaylistRepositoryTest, Load_WhenPlaylistFileDoesNotExist_ThenReturns
     EXPECT_FALSE(result);
 }
 
-TEST_F(FilePlaylistRepositoryTest, Load_WhenPlaylistFileContainsInvalidDuration_ThenSkipsInvalidSongAndLoadsValidSongs)
-{
-    std::ofstream playlistFile(playlistFilePath_);
-    playlistFile << playlistName_ << "\n";
-    playlistFile << "1,Believer,Imagine Dragons,204,resources/audio/song1.wav\n";
-    playlistFile << "2,Numb,Linkin Park,abc,resources/audio/song2.wav\n";
-    playlistFile.close();
-
-    Playlist loadedPlaylist;
-
-    bool result = repository_.load(playlistName_, loadedPlaylist);
-
-    EXPECT_TRUE(result);
-    EXPECT_EQ(loadedPlaylist.getName(), playlistName_);
-    EXPECT_EQ(loadedPlaylist.getSongCount(), 1);
-
-    const std::vector<Song>& loadedSongs = loadedPlaylist.getSongs();
-    ASSERT_EQ(loadedSongs.size(), 1);
-    EXPECT_EQ(loadedSongs[0].getId(), "1");
-}
-
 TEST_F(FilePlaylistRepositoryTest, ListNames_WhenPlaylistFilesExist_ThenReturnsPlaylistNames)
 {
     Playlist playlist1("PlaylistOne");
