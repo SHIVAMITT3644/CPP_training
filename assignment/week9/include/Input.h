@@ -5,5 +5,4 @@
 int readValidUserInput(const std::string& inputMessage);
 void readCompleteLineInput(std::istream& inputStream, std::string& output , const std::string& message);
 
-
 #endif

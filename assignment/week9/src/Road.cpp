@@ -1,14 +1,14 @@
 #include "Road.h"
 
-Road::Road(char roadId, ITrafficLight* trafficLight)
-    : roadId_(roadId),
+Road::Road(char roadName, ITrafficLight* trafficLight)
+    : roadName_(roadName),
       trafficLight_(trafficLight)
 {
 }
 
-char Road::getRoadId() const
+char Road::getroadName() const
 {
-    return roadId_;
+    return roadName_;
 }
 
 ITrafficLight* Road::getTrafficLight() const

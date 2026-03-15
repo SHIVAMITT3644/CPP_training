@@ -5,13 +5,13 @@
 
 class Road
 {
-    char roadId_;
+    char roadName_;
     ITrafficLight* trafficLight_;
 
     public:
-    Road(char roadId, ITrafficLight* trafficLight);
+    Road(char roadName, ITrafficLight* trafficLight);
 
-    char getRoadId() const;
+    char getroadName() const;
     ITrafficLight* getTrafficLight() const;
 };
 

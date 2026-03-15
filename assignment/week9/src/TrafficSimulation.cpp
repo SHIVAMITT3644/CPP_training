@@ -12,43 +12,96 @@
 #include "Road.h"
 #include "TrafficLight.h"
 
-char readRoadIdFromUser(const std::string& message)
+char readroadNameFromUser(const std::string& message)
 {
     std::string input;
+    char roadName = '\0';
+    bool isValidroadName = false;
 
-    while (true)
+    while (!isValidroadName)
     {
         readCompleteLineInput(std::cin, input, message);
 
         if (input.length() == 1)
         {
-            char roadId = std::toupper(static_cast<unsigned char>(input[0]));
+            roadName = std::toupper(static_cast<unsigned char>(input[0]));
 
-            if (roadId == 'A' || roadId == 'B' || roadId == 'C' || roadId == 'D')
+            if (roadName == FIRST_ROAD_NAME ||
+                roadName == SECOND_ROAD_NAME ||
+                roadName == THIRD_ROAD_NAME ||
+                roadName == FOURTH_ROAD_NAME)
             {
-                return roadId;
+                isValidroadName = true;
+            }
+            else
+            {
+                std::cout << INVALID_ROAD_NAME_ERROR_MESSAGE;
             }
         }
-
-        std::cout << "Invalid road name. Please enter A, B, C or D.\n";
+        else
+        {
+            std::cout << INVALID_ROAD_NAME_ERROR_MESSAGE;
+        }
     }
+
+    return roadName;
 }
 
-void setupIntersection(IntersectionController& controller,
-                        TrafficLight& lightA,
-                        TrafficLight& lightB,
-                        TrafficLight& lightC,
-                        TrafficLight& lightD)
+void setupIntersection(IntersectionController& controller, TrafficLight& lightA, TrafficLight& lightB, TrafficLight& lightC,TrafficLight& lightD)
 {
-    Road roadA('A', &lightA);
-    Road roadB('B', &lightB);
-    Road roadC('C', &lightC);
-    Road roadD('D', &lightD);
+    Road roadA(FIRST_ROAD_NAME, &lightA);
+    Road roadB(SECOND_ROAD_NAME, &lightB);
+    Road roadC(THIRD_ROAD_NAME, &lightC);
+    Road roadD(FOURTH_ROAD_NAME, &lightD);
 
     controller.addRoad(roadA);
     controller.addRoad(roadB);
     controller.addRoad(roadC);
     controller.addRoad(roadD);
+}
+
+std::thread startTrafficControllerThread(IntersectionController& controller)
+{
+    std::thread trafficThread(&IntersectionController::startTrafficCycle, &controller);
+    return trafficThread;
+}
+
+void handleProcessVehicleOption(IntersectionController& controller)
+{
+    std::cout << ROAD_LAYOUT;
+
+    char sourceRoad = readroadNameFromUser(SOURCE_ROAD_NAME_INPUT_MESSAGE);
+    char destinationRoad = readroadNameFromUser(DESTINATION_ROAD_NAME_INPUT_MESSAGE);
+
+    controller.processVehicle(sourceRoad, destinationRoad);
+
+    tcflush(STDIN_FILENO, TCIFLUSH);
+}
+
+void handleMenuChoice(int choice, bool& shouldExit, IntersectionController& controller)
+{
+    if (choice == 1)
+    {
+        handleProcessVehicleOption(controller);
+    }
+    else if (choice == 2)
+    {
+        shouldExit = true;
+    }
+    else
+    {
+        std::cout << MAIN_LOOP_INVALID_INPUT_ERROR_MESSAGE;
+    }
+}
+
+void stopTrafficControllerThread(IntersectionController& controller, std::thread& trafficThread)
+{
+    controller.stopTrafficCycle();
+
+    if (trafficThread.joinable())
+    {
+        trafficThread.join();
+    }
 }
 
 void runTrafficSimulation()
@@ -62,7 +115,7 @@ void runTrafficSimulation()
 
     setupIntersection(controller, lightA, lightB, lightC, lightD);
 
-    std::thread trafficThread(&IntersectionController::startTrafficCycle, &controller);
+    std::thread trafficThread = startTrafficControllerThread(controller);
 
     bool shouldExit = false;
 
@@ -74,33 +127,10 @@ void runTrafficSimulation()
 
         int choice = readValidUserInput(ENTER_YOUR_CHOICE_MESSAGE);
 
-        if (choice == 1)
-        {
-            std::cout << ROAD_LAYOUT;
-
-            char sourceRoad = readRoadIdFromUser("\nEnter source road name (A/B/C/D): ");
-            char destinationRoad = readRoadIdFromUser("\nEnter destination road name (A/B/C/D): ");
-
-            controller.processVehicle(sourceRoad, destinationRoad);
-
-            tcflush(STDIN_FILENO, TCIFLUSH);
-        }
-        else if (choice == 2)
-        {
-            shouldExit = true;
-        }
-        else
-        {
-            std::cout << MAIN_LOOP_INVALID_INPUT_ERROR_MESSAGE;
-        }
+        handleMenuChoice(choice, shouldExit, controller);
     }
 
-    controller.stopTrafficCycle();
-
-    if (trafficThread.joinable())
-    {
-        trafficThread.join();
-    }
+    stopTrafficControllerThread(controller, trafficThread);
 
     std::cout << EXIT_PROGRAM_MESSAGE;
 }
