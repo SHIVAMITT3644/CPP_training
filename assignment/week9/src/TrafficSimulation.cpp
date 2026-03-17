@@ -47,12 +47,12 @@ char readroadNameFromUser(const std::string& message)
     return roadName;
 }
 
-void setupIntersection(IntersectionController& controller, TrafficLight& lightA, TrafficLight& lightB, TrafficLight& lightC,TrafficLight& lightD)
+void setupIntersection(IntersectionController& controller,  ITrafficLight* lightA, ITrafficLight* lightB, ITrafficLight* lightC, ITrafficLight* lightD)
 {
-    Road roadA(FIRST_ROAD_NAME, &lightA);
-    Road roadB(SECOND_ROAD_NAME, &lightB);
-    Road roadC(THIRD_ROAD_NAME, &lightC);
-    Road roadD(FOURTH_ROAD_NAME, &lightD);
+    Road roadA(FIRST_ROAD_NAME, lightA);
+    Road roadB(SECOND_ROAD_NAME, lightB);
+    Road roadC(THIRD_ROAD_NAME, lightC);
+    Road roadD(FOURTH_ROAD_NAME, lightD);
 
     controller.addRoad(roadA);
     controller.addRoad(roadB);
@@ -108,10 +108,15 @@ void runTrafficSimulation()
 {
     IntersectionController controller;
 
-    TrafficLight lightA;
-    TrafficLight lightB;
-    TrafficLight lightC;
-    TrafficLight lightD;
+    TrafficLight lightAObj;
+    TrafficLight lightBObj;
+    TrafficLight lightCObj;
+    TrafficLight lightDObj;
+
+    ITrafficLight* lightA = &lightAObj;
+    ITrafficLight* lightB = &lightBObj;
+    ITrafficLight* lightC = &lightCObj;
+    ITrafficLight* lightD = &lightDObj;
 
     setupIntersection(controller, lightA, lightB, lightC, lightD);
 

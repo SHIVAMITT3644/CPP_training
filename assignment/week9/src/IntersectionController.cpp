@@ -188,14 +188,14 @@ int IntersectionController::getRemainingTimeForGreen(char roadName)
 
         int currentIndex = currentGreenRoad - FIRST_ROAD_NAME;
         int targetIndex = roadName - FIRST_ROAD_NAME;
-        int offset = targetIndex - currentIndex;
+        int signalsUntilTargetRoad = targetIndex - currentIndex;
 
-        if (offset < 0)
+        if (signalsUntilTargetRoad < 0)
         {
-            offset += 4;
+            signalsUntilTargetRoad += 4;
         }
 
-        if (offset == 0)
+        if (signalsUntilTargetRoad == 0)
         {
             remainingTime = remainingCurrentGreenTime;
         }
@@ -203,7 +203,7 @@ int IntersectionController::getRemainingTimeForGreen(char roadName)
         {
             remainingTime =
                 remainingCurrentGreenTime +
-                ((offset - 1) * GREEN_SIGNAL_DURATION_SECONDS);
+                ((signalsUntilTargetRoad - 1) * GREEN_SIGNAL_DURATION_SECONDS);
         }
     }
 
