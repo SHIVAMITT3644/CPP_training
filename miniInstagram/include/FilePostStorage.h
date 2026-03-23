@@ -12,9 +12,11 @@ class FilePostStorage : public IFilePostStorage
 private:
     std::string postDirectoryPath;
 
-    std::string getPostFilePath(const std::string& authorUsername, const std::string& postId) const;
-
+    std::string getUserPostFilePath(const std::string& username) const;
     bool ensurePostDirectoryExists() const;
+
+    std::vector<Post> loadPostsFromFile(const std::string& username) const;
+    bool savePostsToFile(const std::string& username, const std::vector<Post>& posts) const;
 
 public:
     FilePostStorage(const std::string& postDirectoryPath);
@@ -29,4 +31,4 @@ public:
     std::vector<Post> getAllPosts() const override;
 };
 
-#endif
+#endif 

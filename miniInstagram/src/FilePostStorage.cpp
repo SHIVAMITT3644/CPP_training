@@ -11,7 +11,6 @@ namespace
     json convertCommentToJson(const Comment& comment)
     {
         json commentJson;
-        commentJson["commentId"] = comment.getCommentId();
         commentJson["commentedByUsername"] = comment.getCommentedByUsername();
         commentJson["commentedByName"] = comment.getCommentedByName();
         commentJson["text"] = comment.getText();
@@ -21,7 +20,6 @@ namespace
     Comment convertJsonToComment(const json& commentJson)
     {
         return Comment(
-            commentJson.value("commentId", ""),
             commentJson.value("commentedByUsername", ""),
             commentJson.value("commentedByName", ""),
             commentJson.value("text", "")
@@ -97,10 +95,9 @@ FilePostStorage::FilePostStorage(const std::string& postDirectoryPath)
     ensurePostDirectoryExists();
 }
 
-std::string FilePostStorage::getPostFilePath(const std::string& authorUsername,
-                                             const std::string& postId) const
+std::string FilePostStorage::getUserPostFilePath(const std::string& username) const
 {
-    return postDirectoryPath + "/" + authorUsername + "_" + postId + ".json";
+    return postDirectoryPath + "/" + username + ".json";
 }
 
 bool FilePostStorage::ensurePostDirectoryExists() const
@@ -120,160 +117,164 @@ bool FilePostStorage::ensurePostDirectoryExists() const
     }
 }
 
-bool FilePostStorage::addPost(const Post& post)
+std::vector<Post> FilePostStorage::loadPostsFromFile(const std::string& username) const
+{
+    std::vector<Post> posts;
+    std::string filePath = getUserPostFilePath(username);
+
+    if (!std::filesystem::exists(filePath))
+    {
+        return posts;
+    }
+
+    std::ifstream inputFile(filePath);
+
+    if (!inputFile.is_open())
+    {
+        return posts;
+    }
+
+    try
+    {
+        json postsJson;
+        inputFile >> postsJson;
+
+        if (!postsJson.is_array())
+        {
+            return posts;
+        }
+
+        for (const auto& postJson : postsJson)
+        {
+            Post post = convertJsonToPost(postJson);
+
+            if (!post.getPostId().empty())
+            {
+                posts.push_back(post);
+            }
+        }
+    }
+    catch (...)
+    {
+        return {};
+    }
+
+    return posts;
+}
+
+bool FilePostStorage::savePostsToFile(const std::string& username,
+                                      const std::vector<Post>& posts) const
 {
     if (!ensurePostDirectoryExists())
     {
         return false;
     }
 
-    std::string filePath = getPostFilePath(post.getAuthorUsername(), post.getPostId());
-
-    if (std::filesystem::exists(filePath))
-    {
-        return false;
-    }
-
-    std::ofstream outputFile(filePath);
+    std::ofstream outputFile(getUserPostFilePath(username));
 
     if (!outputFile.is_open())
     {
         return false;
     }
 
-    outputFile << convertPostToJson(post).dump(4);
+    json postsJson = json::array();
+
+    for (const Post& post : posts)
+    {
+        postsJson.push_back(convertPostToJson(post));
+    }
+
+    outputFile << postsJson.dump(4);
     return outputFile.good();
+}
+
+bool FilePostStorage::addPost(const Post& post)
+{
+    std::vector<Post> posts = loadPostsFromFile(post.getAuthorUsername());
+
+    for (const Post& existingPost : posts)
+    {
+        if (existingPost.getPostId() == post.getPostId())
+        {
+            return false;
+        }
+    }
+
+    posts.push_back(post);
+    return savePostsToFile(post.getAuthorUsername(), posts);
 }
 
 bool FilePostStorage::updatePost(const Post& post)
 {
-    if (!ensurePostDirectoryExists())
+    std::vector<Post> posts = loadPostsFromFile(post.getAuthorUsername());
+
+    for (Post& existingPost : posts)
     {
-        return false;
+        if (existingPost.getPostId() == post.getPostId())
+        {
+            existingPost = post;
+            return savePostsToFile(post.getAuthorUsername(), posts);
+        }
     }
 
-    std::ofstream outputFile(getPostFilePath(post.getAuthorUsername(), post.getPostId()));
-
-    if (!outputFile.is_open())
-    {
-        return false;
-    }
-
-    outputFile << convertPostToJson(post).dump(4);
-    return outputFile.good();
+    return false;
 }
 
 bool FilePostStorage::deletePost(const std::string& postId,
                                  const std::string& authorUsername)
 {
-    try
-    {
-        std::string filePath = getPostFilePath(authorUsername, postId);
+    std::vector<Post> posts = loadPostsFromFile(authorUsername);
+    std::vector<Post> updatedPosts;
 
-        if (!std::filesystem::exists(filePath))
+    bool isDeleted = false;
+
+    for (const Post& post : posts)
+    {
+        if (post.getPostId() == postId)
         {
-            return false;
+            isDeleted = true;
+            continue;
         }
 
-        return std::filesystem::remove(filePath);
+        updatedPosts.push_back(post);
     }
-    catch (...)
+
+    if (!isDeleted)
     {
         return false;
     }
+
+    return savePostsToFile(authorUsername, updatedPosts);
 }
 
 std::optional<Post> FilePostStorage::getPostById(const std::string& postId,
                                                  const std::string& authorUsername) const
 {
-    std::ifstream inputFile(getPostFilePath(authorUsername, postId));
+    std::vector<Post> posts = loadPostsFromFile(authorUsername);
 
-    if (!inputFile.is_open())
+    for (const Post& post : posts)
     {
-        return std::nullopt;
-    }
-
-    try
-    {
-        json postJson;
-        inputFile >> postJson;
-
-        Post post = convertJsonToPost(postJson);
-
-        if (post.getPostId().empty() || post.getAuthorUsername().empty())
+        if (post.getPostId() == postId)
         {
-            return std::nullopt;
+            return post;
         }
+    }
 
-        return post;
-    }
-    catch (...)
-    {
-        return std::nullopt;
-    }
+    return std::nullopt;
 }
 
 std::vector<Post> FilePostStorage::getPostsByUsername(const std::string& username) const
 {
-    std::vector<Post> posts;
-
-    if (!std::filesystem::exists(postDirectoryPath))
-    {
-        return posts;
-    }
-
-    try
-    {
-        for (const auto& entry : std::filesystem::directory_iterator(postDirectoryPath))
-        {
-            if (!entry.is_regular_file())
-            {
-                continue;
-            }
-
-            if (entry.path().extension() != ".json")
-            {
-                continue;
-            }
-
-            std::ifstream inputFile(entry.path());
-
-            if (!inputFile.is_open())
-            {
-                continue;
-            }
-
-            json postJson;
-            inputFile >> postJson;
-
-            if (postJson.value("username", "") != username)
-            {
-                continue;
-            }
-
-            Post post = convertJsonToPost(postJson);
-
-            if (!post.getPostId().empty())
-            {
-                posts.push_back(post);
-            }
-        }
-    }
-    catch (...)
-    {
-        return posts;
-    }
-
-    return posts;
+    return loadPostsFromFile(username);
 }
 
 std::vector<Post> FilePostStorage::getAllPosts() const
 {
-    std::vector<Post> posts;
+    std::vector<Post> allPosts;
 
     if (!std::filesystem::exists(postDirectoryPath))
     {
-        return posts;
+        return allPosts;
     }
 
     try
@@ -297,21 +298,29 @@ std::vector<Post> FilePostStorage::getAllPosts() const
                 continue;
             }
 
-            json postJson;
-            inputFile >> postJson;
+            json postsJson;
+            inputFile >> postsJson;
 
-            Post post = convertJsonToPost(postJson);
-
-            if (!post.getPostId().empty())
+            if (!postsJson.is_array())
             {
-                posts.push_back(post);
+                continue;
+            }
+
+            for (const auto& postJson : postsJson)
+            {
+                Post post = convertJsonToPost(postJson);
+
+                if (!post.getPostId().empty())
+                {
+                    allPosts.push_back(post);
+                }
             }
         }
     }
     catch (...)
     {
-        return posts;
+        return allPosts;
     }
 
-    return posts;
+    return allPosts;
 }

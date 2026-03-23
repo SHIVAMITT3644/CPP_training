@@ -1,0 +1,38 @@
+[
+    {
+        "authorName": "annu",
+        "comments": [],
+        "content": "my name is shivam",
+        "likedByUsers": [
+            {
+                "name": "annu",
+                "username": "@annu01"
+            }
+        ],
+        "postId": "post1",
+        "username": "@annu01"
+    },
+    {
+        "authorName": "annu",
+        "comments": [
+            {
+                "commentedByName": "annu",
+                "commentedByUsername": "@annu01",
+                "text": "hii"
+            }
+        ],
+        "content": "good",
+        "likedByUsers": [
+            {
+                "name": "annu",
+                "username": "@annu01"
+            },
+            {
+                "name": "shivam pratap",
+                "username": "shivam"
+            }
+        ],
+        "postId": "post2",
+        "username": "@annu01"
+    }
+]
