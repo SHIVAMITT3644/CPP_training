@@ -86,3 +86,8 @@ std::optional<User> AuthManager::getLoggedInUser() const
 {
     return loggedInUser;
 }
+
+void AuthManager::updateLoggedInUser(const User& updatedUser)
+{
+    loggedInUser = updatedUser;
+}

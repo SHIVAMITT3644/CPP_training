@@ -27,11 +27,10 @@ public:
                 const std::string& bio);
 
     bool signIn(const std::string& username, const std::string& password);
-
     void signOut();
-
     bool isUserLoggedIn() const;
     std::optional<User> getLoggedInUser() const;
+    void updateLoggedInUser(const User& updatedUser);
 };
 
 #endif

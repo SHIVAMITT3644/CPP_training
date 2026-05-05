@@ -2,37 +2,30 @@
     {
         "authorName": "annu",
         "comments": [],
-        "content": "my name is shivam",
-        "likedByUsers": [
-            {
-                "name": "annu",
-                "username": "@annu01"
-            }
-        ],
-        "postId": "post1",
+        "content": "dew",
+        "createdAt": 1774248183830,
+        "likedByUsers": [],
+        "postId": "post4",
         "username": "@annu01"
     },
     {
         "authorName": "annu",
         "comments": [
             {
-                "commentedByName": "annu",
-                "commentedByUsername": "@annu01",
-                "text": "hii"
+                "commentedByName": "abcd",
+                "commentedByUsername": "random",
+                "text": "gcqdgcew"
             }
         ],
-        "content": "good",
+        "content": "dh",
+        "createdAt": 1774248181777,
         "likedByUsers": [
             {
-                "name": "annu",
-                "username": "@annu01"
-            },
-            {
-                "name": "shivam pratap",
-                "username": "shivam"
+                "name": "abcd",
+                "username": "random"
             }
         ],
-        "postId": "post2",
+        "postId": "post3",
         "username": "@annu01"
     }
 ]

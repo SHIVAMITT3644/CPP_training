@@ -1,0 +1,20 @@
+[
+    {
+        "authorName": "shivam pratap",
+        "comments": [],
+        "content": "best actor in the world",
+        "createdAt": 1774248155640,
+        "likedByUsers": [],
+        "postId": "post2",
+        "username": "shivam"
+    },
+    {
+        "authorName": "shivam pratap",
+        "comments": [],
+        "content": "dbhwerf",
+        "createdAt": 1774248153301,
+        "likedByUsers": [],
+        "postId": "post1",
+        "username": "shivam"
+    }
+]

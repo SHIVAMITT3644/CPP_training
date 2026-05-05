@@ -3,11 +3,13 @@
 Post::Post(const std::string& postId,
            const std::string& authorUsername,
            const std::string& authorName,
-           const std::string& content)
+           const std::string& content,
+           long long createdAt)
     : postId(postId),
       authorUsername(authorUsername),
       authorName(authorName),
-      content(content)
+      content(content),
+      createdAt(createdAt)
 {
 }
 
@@ -29,6 +31,11 @@ std::string Post::getAuthorName() const
 std::string Post::getContent() const
 {
     return content;
+}
+
+long long Post::getCreatedAt() const
+{
+    return createdAt;
 }
 
 bool Post::addLike(const std::string& username, const std::string& fullName)
@@ -59,7 +66,35 @@ std::map<std::string, std::string> Post::getLikedUsers() const
 bool Post::addComment(const Comment& comment)
 {
     comments.push_back(comment);
+    return true;
+}
 
+bool Post::editComment(int commentIndex, const std::string& updatedText)
+{
+    if (commentIndex < 0 || commentIndex >= static_cast<int>(comments.size()))
+    {
+        return false;
+    }
+
+    Comment existingComment = comments[commentIndex];
+
+    comments[commentIndex] = Comment(
+        existingComment.getCommentedByUsername(),
+        existingComment.getCommentedByName(),
+        updatedText
+    );
+
+    return true;
+}
+
+bool Post::deleteComment(int commentIndex)
+{
+    if (commentIndex < 0 || commentIndex >= static_cast<int>(comments.size()))
+    {
+        return false;
+    }
+
+    comments.erase(comments.begin() + commentIndex);
     return true;
 }
 

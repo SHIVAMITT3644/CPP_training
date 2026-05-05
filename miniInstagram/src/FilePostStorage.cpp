@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <algorithm>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -33,6 +34,7 @@ namespace
         postJson["authorName"] = post.getAuthorName();
         postJson["postId"] = post.getPostId();
         postJson["content"] = post.getContent();
+        postJson["createdAt"] = post.getCreatedAt();
 
         postJson["likedByUsers"] = json::array();
         std::map<std::string, std::string> likedUsers = post.getLikedUsers();
@@ -60,7 +62,8 @@ namespace
             postJson.value("postId", ""),
             postJson.value("username", ""),
             postJson.value("authorName", ""),
-            postJson.value("content", "")
+            postJson.value("content", ""),
+            postJson.value("createdAt", 0LL)
         );
 
         if (postJson.contains("likedByUsers") && postJson["likedByUsers"].is_array())
@@ -86,6 +89,15 @@ namespace
         }
 
         return post;
+    }
+
+    void sortPostsLatestToOldest(std::vector<Post>& posts)
+    {
+        std::sort(posts.begin(), posts.end(),
+                  [](const Post& firstPost, const Post& secondPost)
+                  {
+                      return firstPost.getCreatedAt() > secondPost.getCreatedAt();
+                  });
     }
 }
 
@@ -153,6 +165,8 @@ std::vector<Post> FilePostStorage::loadPostsFromFile(const std::string& username
                 posts.push_back(post);
             }
         }
+
+        sortPostsLatestToOldest(posts);
     }
     catch (...)
     {
@@ -201,6 +215,8 @@ bool FilePostStorage::addPost(const Post& post)
     }
 
     posts.push_back(post);
+    sortPostsLatestToOldest(posts);
+
     return savePostsToFile(post.getAuthorUsername(), posts);
 }
 
@@ -213,6 +229,7 @@ bool FilePostStorage::updatePost(const Post& post)
         if (existingPost.getPostId() == post.getPostId())
         {
             existingPost = post;
+            sortPostsLatestToOldest(posts);
             return savePostsToFile(post.getAuthorUsername(), posts);
         }
     }
@@ -244,6 +261,8 @@ bool FilePostStorage::deletePost(const std::string& postId,
         return false;
     }
 
+    sortPostsLatestToOldest(updatedPosts);
+
     return savePostsToFile(authorUsername, updatedPosts);
 }
 
@@ -265,7 +284,9 @@ std::optional<Post> FilePostStorage::getPostById(const std::string& postId,
 
 std::vector<Post> FilePostStorage::getPostsByUsername(const std::string& username) const
 {
-    return loadPostsFromFile(username);
+    std::vector<Post> posts = loadPostsFromFile(username);
+    sortPostsLatestToOldest(posts);
+    return posts;
 }
 
 std::vector<Post> FilePostStorage::getAllPosts() const
@@ -316,6 +337,8 @@ std::vector<Post> FilePostStorage::getAllPosts() const
                 }
             }
         }
+
+        sortPostsLatestToOldest(allPosts);
     }
     catch (...)
     {
